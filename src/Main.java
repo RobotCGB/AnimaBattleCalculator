@@ -3,9 +3,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    //github pull prueba
-    int jejeje;
-
     public static ArrayList<Personaje> personajes = new ArrayList<>();
     
     public static ArrayList<Equipo> equipos = new ArrayList<>();
