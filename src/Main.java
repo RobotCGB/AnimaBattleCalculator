@@ -20,6 +20,7 @@ public class Main {
                 case 3 -> crearEquipo();
                 case 4 -> mostrarPersonajes();
                 case 5 -> mostrarEquipos();
+                case 6 -> editarEquipos();
                 default -> {
                     System.out.println("Error");
                 }
@@ -37,11 +38,13 @@ public class Main {
         System.out.println("3. Crear equipo");
         System.out.println("4. Mostrar personajes");
         System.out.println("5. Mostrar equipos");
+        System.out.println("6. Editar equipos");
         System.out.println("Elige: ");
         return sc.nextInt();
     }
 
     private static void crearPersonaje(){
+
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Nombre: ");
@@ -56,7 +59,10 @@ public class Main {
         System.out.println("Turno actual: ");
         int turnoBase = sc.nextInt();
 
-        Personaje pj = new Personaje(nombre, HAbase, HDbase, turnoBase);
+        System.out.println("Daño actual: ");
+        int danoBase = sc.nextInt();
+
+        Personaje pj = new Personaje(nombre, HAbase, HDbase, turnoBase, danoBase);
         personajes.add(pj);
 
     }
@@ -77,7 +83,7 @@ public class Main {
             System.out.println("Elige personaje que añadir: ");
             System.out.println(personajes.toString());
             select = sc.nextLine();
-            party.add(getPersonajeNombre(select));
+            party.add(getPersonajePorNombre(select));
             System.out.println("¿Quieres añadir alguien mas?(s/n): ");
             c = sc.next().charAt(0);
         } while(c != 's');
@@ -96,7 +102,7 @@ public class Main {
         System.out.println(equipos.toString());
     }
 
-    public static Personaje getPersonajeNombre(String nombre){
+    public static Personaje getPersonajePorNombre(String nombre){
         boolean ok = false;
         int i = 0;
         Personaje ret = null;
@@ -107,6 +113,66 @@ public class Main {
             }
             i++;
         }
+        return ret;
+    }
+
+    public static Equipo getEquipoPorNombre(String nombre){
+        boolean ok = false;
+        int i = 0;
+        Equipo ret = null;
+        while(!ok && i < personajes.size()){
+            if(equipos.get(i).getNombre().equals(nombre)){
+                ok = true;
+                ret = equipos.get(i);
+            }
+            i++;
+        }
+        return ret;
+    }
+
+    public static void editarEquipos(){
+
+        System.out.println("Estos son los equipos a editar: ");
+        mostrarEquipos();
+        System.out.println("¿Cual quieres?: ");
+        Equipo eqSelec = getEquipoPorNombre(sc.nextLine());
+        System.out.println("¿Y que quieres hacer?: ");
+        System.out.println("1. Añadir personaje");
+        System.out.println("2. Eliminar personaje");
+        int op = sc.nextInt();
+        switch (op) {
+            case 1 -> eqSelec.añadirPjParty(pjAAñadir());
+            case 2 -> pjAEliminar(eqSelec);
+            default -> {
+                System.out.println("Error");
+            }
+        }
+
+    }
+
+    public static Personaje pjAEliminar(Equipo eq){
+
+        Personaje ret = null;
+        System.out.println("Personajes disponibles: ");
+        mostrarPersonajes();
+        System.out.println("Pj en el equipo: ");
+        eq.mostrarParty();
+        System.out.println("Elige pj a eliminar: ");
+        String pjSelec = sc.nextLine();
+        ret = eq.getPjDeParty(pjSelec);
+        return ret;
+
+    }
+
+
+    public static Personaje pjAAñadir(){
+        Personaje ret = null;
+        System.out.println("Personajes disponibles: ");
+        mostrarPersonajes();
+        System.out.println("Elige pj a añadir: ");
+        String pjSelec = sc.nextLine();
+        ret = getPersonajePorNombre(pjSelec);
+
         return ret;
     }
 
