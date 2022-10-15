@@ -1,3 +1,4 @@
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,11 +11,25 @@ public class Main {
     public static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
+
+        Personaje Alexei = new Personaje("Alexei", 160, 160, 80, 60);
+        Personaje Manya = new Personaje("Manya", 120, 120, 120, 90);
+        Personaje Yassir = new Personaje("Yassir", 120, 140, 100, 80);
+        Personaje Ziri = new Personaje("Ziri", 140, 180, 80, 100);
+
+        personajes.add(Alexei);
+        personajes.add(Manya);
+        personajes.add(Yassir);
+        personajes.add(Ziri);
+
+
+
         char opcion = 'n';
         
         System.out.println("Bienvenido a Anima Battle Calculator (ABC): ");
         while(opcion != 's') {
             switch (elegirUso()) {
+                case 0 -> System.out.println();
                 case 1 -> crearCombate();
                 case 2 -> crearPersonaje();
                 case 3 -> crearEquipo();
@@ -33,6 +48,7 @@ public class Main {
     private static int elegirUso(){
 
         System.out.println("Dime, ¿que quieres hacer?");
+        System.out.println("0. Salir");
         System.out.println("1. Calcular combate");
         System.out.println("2. Crear personaje");
         System.out.println("3. Crear equipo");
@@ -68,25 +84,34 @@ public class Main {
     }
 
     private static void crearCombate(){
+        System.out.println("Lo siento, esto aun no esta hecho");
     }
 
     private static void crearEquipo(){
+        Scanner sc = new Scanner(System.in);
         boolean ok = false;
         ArrayList<Personaje> party = new ArrayList<>();
 
         System.out.println("Elige el nombre del equipo: ");
         String nombre = sc.nextLine();
         char c;
-        String select;
+        String select = null;
+
+        Personaje aux = null;
 
         do {
+            System.out.println("Personajes elegibles: ");
+            mostrarPersonajes();
             System.out.println("Elige personaje que añadir: ");
-            System.out.println(personajes.toString());
+            sc.nextLine();
             select = sc.nextLine();
-            party.add(getPersonajePorNombre(select));
-            System.out.println("¿Quieres añadir alguien mas?(s/n): ");
+            aux = getPersonajePorNombre(select);
+            if (aux != null) {
+                party.add(aux);
+            }
+        System.out.println("¿Quieres añadir alguien mas?(s/n): ");
             c = sc.next().charAt(0);
-        } while(c != 's');
+        } while(c != 'n');
 
         Equipo eq = new Equipo(nombre, party);
         
@@ -99,7 +124,23 @@ public class Main {
     }
     
     private static void mostrarEquipos(){
-        System.out.println(equipos.toString());
+
+        if(equipos.size() > 1) {
+            for (int i = 0; i < equipos.size(); i++) {
+                System.out.print(equipos.get(i).getNombre() + ": ");
+                equipos.get(i).mostrarParty();
+
+            }
+        } else if(equipos.size() == 1){
+            System.out.println(equipos.get(0).getNombre() + ": ");
+            equipos.get(0).mostrarParty();
+        } else{
+            System.out.println("Aun no se han creado equipos");
+        }
+
+        System.out.println("\nPulsa enter para continuar");
+        sc.nextLine();
+
     }
 
     public static Personaje getPersonajePorNombre(String nombre){
@@ -110,9 +151,12 @@ public class Main {
             if(personajes.get(i).getNombre().equals(nombre)){
                 ok = true;
                 ret = personajes.get(i);
+                System.out.println("Personaje: " + ret.getNombre() + " seleccionado");
             }
             i++;
         }
+        if(ret == null)
+            System.out.println("No se ha encontrado el personaje");
         return ret;
     }
 
@@ -142,7 +186,7 @@ public class Main {
         int op = sc.nextInt();
         switch (op) {
             case 1 -> eqSelec.añadirPjParty(pjAAñadir());
-            case 2 -> pjAEliminar(eqSelec);
+            case 2 -> eqSelec.eliminarPjParty(pjAEliminar(eqSelec));
             default -> {
                 System.out.println("Error");
             }
@@ -153,9 +197,7 @@ public class Main {
     public static Personaje pjAEliminar(Equipo eq){
 
         Personaje ret = null;
-        System.out.println("Personajes disponibles: ");
-        mostrarPersonajes();
-        System.out.println("Pj en el equipo: ");
+        System.out.println("Pjs en el equipo: ");
         eq.mostrarParty();
         System.out.println("Elige pj a eliminar: ");
         String pjSelec = sc.nextLine();

@@ -15,7 +15,7 @@ public class Equipo {
 
     public void mostrarParty(){
         for(int i = 0; i < party.size(); i++){
-            System.out.println(party.get(i).getNombre());
+            System.out.print(party.get(i).getNombre() + ", ");
         }
     }
 
