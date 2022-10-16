@@ -13,10 +13,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Personaje Alexei = new Personaje("Alexei", 160, 160, 80, 60);
-        Personaje Manya = new Personaje("Manya", 120, 120, 120, 90);
-        Personaje Yassir = new Personaje("Yassir", 120, 140, 100, 80);
-        Personaje Ziri = new Personaje("Ziri", 140, 180, 80, 100);
+        Personaje Alexei = new Personaje("Alexei", 200, 160, 160, 80, 60);
+        Personaje Manya = new Personaje("Manya", 180, 120, 120, 120, 90);
+        Personaje Yassir = new Personaje("Yassir", 140, 120, 140, 100, 80);
+        Personaje Ziri = new Personaje("Ziri", 100,  140, 180, 80, 100);
 
         personajes.add(Alexei);
         personajes.add(Manya);
@@ -67,6 +67,9 @@ public class Main {
         System.out.println("Nombre: ");
         String nombre = sc.nextLine();
 
+        System.out.println("Salud actual: ");
+        int salud = sc.nextInt();
+
         System.out.println("HA actual: ");
         int HAbase = sc.nextInt();
 
@@ -79,7 +82,7 @@ public class Main {
         System.out.println("Daño actual: ");
         int danoBase = sc.nextInt();
 
-        Personaje pj = new Personaje(nombre, HAbase, HDbase, turnoBase, danoBase);
+        Personaje pj = new Personaje(nombre,salud, HAbase, HDbase, turnoBase, danoBase);
         personajes.add(pj);
 
     }
