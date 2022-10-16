@@ -1,5 +1,6 @@
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -41,7 +42,7 @@ public class Main {
                 }
             }
             System.out.println("¿Has terminado?");
-            opcion = sc.next().charAt(0);
+            opcion = sc.next().toLowerCase().charAt(0);
         }
     }
 
@@ -100,17 +101,17 @@ public class Main {
         Personaje aux = null;
 
         do {
+            sc = new Scanner(System.in);
             System.out.println("Personajes elegibles: ");
             mostrarPersonajes();
             System.out.println("Elige personaje que añadir: ");
-            sc.nextLine();
             select = sc.nextLine();
             aux = getPersonajePorNombre(select);
             if (aux != null) {
                 party.add(aux);
             }
         System.out.println("¿Quieres añadir alguien mas?(s/n): ");
-            c = sc.next().charAt(0);
+            c = sc.next().toLowerCase().charAt(0);
         } while(c != 'n');
 
         Equipo eq = new Equipo(nombre, party);
@@ -125,21 +126,24 @@ public class Main {
     
     private static void mostrarEquipos(){
 
+        Scanner sc = new Scanner(System.in);
         if(equipos.size() > 1) {
             for (int i = 0; i < equipos.size(); i++) {
+                System.out.println("");
                 System.out.print(equipos.get(i).getNombre() + ": ");
                 equipos.get(i).mostrarParty();
+                System.out.println("");
 
             }
         } else if(equipos.size() == 1){
+            System.out.println("");
             System.out.println(equipos.get(0).getNombre() + ": ");
             equipos.get(0).mostrarParty();
+            System.out.println("");
         } else{
             System.out.println("Aun no se han creado equipos");
         }
 
-        System.out.println("\nPulsa enter para continuar");
-        sc.nextLine();
 
     }
 
@@ -161,32 +165,47 @@ public class Main {
     }
 
     public static Equipo getEquipoPorNombre(String nombre){
-        boolean ok = false;
-        int i = 0;
-        Equipo ret = null;
-        while(!ok && i < personajes.size()){
-            if(equipos.get(i).getNombre().equals(nombre)){
-                ok = true;
-                ret = equipos.get(i);
+
+        if(equipos.size() > 0) {
+            boolean ok = false;
+            int i = 0;
+            Equipo ret = null;
+            while (!ok && i < personajes.size()) {
+                if (nombre.equals(equipos.get(i).getNombre())) {
+                    ok = true;
+                    ret = equipos.get(i);
+                }
+                i++;
             }
-            i++;
+            return ret;
+        } else {
+            System.out.println("Error: no hay equipos");
+            return null;
         }
-        return ret;
     }
 
     public static void editarEquipos(){
+
+        Scanner sc = new Scanner(System.in);
 
         System.out.println("Estos son los equipos a editar: ");
         mostrarEquipos();
         System.out.println("¿Cual quieres?: ");
         Equipo eqSelec = getEquipoPorNombre(sc.nextLine());
+        System.out.println("Has seleccionado: " + eqSelec.getNombre());
         System.out.println("¿Y que quieres hacer?: ");
+        System.out.println("0. Salir");
         System.out.println("1. Añadir personaje");
         System.out.println("2. Eliminar personaje");
+        System.out.println("3. Cambiar nombre");
+        System.out.println("4. Añadir masilla");
         int op = sc.nextInt();
         switch (op) {
+            case 0 -> System.out.println();
             case 1 -> eqSelec.añadirPjParty(pjAAñadir());
             case 2 -> eqSelec.eliminarPjParty(pjAEliminar(eqSelec));
+            case 3 -> eqSelec.cambiarNombre();
+            case 4 -> añadirMasillas(eqSelec);
             default -> {
                 System.out.println("Error");
             }
@@ -196,26 +215,55 @@ public class Main {
 
     public static Personaje pjAEliminar(Equipo eq){
 
+        Scanner sc = new Scanner(System.in);
+        String pjSelec = null;
         Personaje ret = null;
+
         System.out.println("Pjs en el equipo: ");
         eq.mostrarParty();
-        System.out.println("Elige pj a eliminar: ");
-        String pjSelec = sc.nextLine();
+        System.out.println("\nElige pj a eliminar: ");
+        pjSelec = sc.nextLine();
         ret = eq.getPjDeParty(pjSelec);
+
         return ret;
 
     }
 
 
     public static Personaje pjAAñadir(){
+
+        Scanner sc = new Scanner(System.in);
         Personaje ret = null;
+        String pjSelec = null;
+
         System.out.println("Personajes disponibles: ");
         mostrarPersonajes();
         System.out.println("Elige pj a añadir: ");
-        String pjSelec = sc.nextLine();
+        pjSelec = sc.nextLine();
         ret = getPersonajePorNombre(pjSelec);
 
         return ret;
+    }
+
+    public static void añadirMasillas(Equipo eq){
+
+        Scanner sc = new Scanner(System.in);
+        Personaje ret = null;
+        String pjSelec = null;
+        int veces = 0;
+
+        System.out.println("Personajes disponibles: ");
+        mostrarPersonajes();
+        System.out.println("Elige que tipo de masillas añadir: ");
+        pjSelec = sc.nextLine();
+        System.out.println("Dime la cantidad que quieres introducir: ");
+        veces = sc.nextInt();
+
+        for(int i = 0; i < veces; i++){
+            eq.añadirMasillaParty(getPersonajePorNombre(pjSelec));
+        }
+        System.out.println("Ahora el equipo esta así: ");
+        eq.mostrarParty();
     }
 
 }
