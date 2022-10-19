@@ -1,5 +1,6 @@
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -23,14 +24,12 @@ public class Main {
         personajes.add(Yassir);
         personajes.add(Ziri);
 
-
-
         char opcion = 'n';
         
         System.out.println("Bienvenido a Anima Battle Calculator (ABC): ");
         while(opcion != 's') {
             switch (elegirUso()) {
-                case 0 -> System.out.println();
+                case 0 -> opcion = 's';
                 case 1 -> crearCombate();
                 case 2 -> crearPersonaje();
                 case 3 -> crearEquipo();
@@ -41,12 +40,12 @@ public class Main {
                     System.out.println("Error");
                 }
             }
-            System.out.println("¿Has terminado?");
-            opcion = sc.next().toLowerCase().charAt(0);
+            clear();
         }
     }
 
     private static int elegirUso(){
+
 
         System.out.println("Dime, ¿que quieres hacer?");
         System.out.println("0. Salir");
@@ -63,6 +62,8 @@ public class Main {
     private static void crearPersonaje(){
 
         Scanner sc = new Scanner(System.in);
+
+        clear();
 
         System.out.println("Nombre: ");
         String nombre = sc.nextLine();
@@ -88,7 +89,90 @@ public class Main {
     }
 
     private static void crearCombate(){
-        System.out.println("Lo siento, esto aun no esta hecho");
+        Scanner sc = new Scanner(System.in);
+        boolean ok = false;
+        Equipo eqUno = null;
+        Equipo eqDos = null;
+        int numeroDeTurnos = 1;
+        boolean fin = false;
+        char c = 'n';
+
+        while(!ok) {
+            System.out.println("Equipos a elegir: ");
+            mostrarEquipos();
+            System.out.println("Elige el primer equipo: ");
+            eqUno = getEquipoPorNombre(sc.nextLine());
+            if(eqUno == null){
+                System.out.println("Equipo no valido");
+            } else{
+                ok = true;
+            }
+        }
+        ok = false;
+        while(!ok) {
+            System.out.println("Equipos a elegir: ");
+            mostrarEquipos();
+            System.out.println("Elige el segundo equipo: ");
+            eqDos = getEquipoPorNombre(sc.nextLine());
+            if(eqDos == null){
+                System.out.println("Equipo no valido");
+            } else{
+                ok = true;
+            }
+        }
+
+        Combate combate = new Combate(eqUno, eqDos);
+        do{
+            System.out.println("Turno " + numeroDeTurnos);
+            System.out.println("Tiramos turno...");
+            System.out.println();
+
+            Equipo ambosEquipos = new Equipo(eqUno, eqDos);
+
+            int cantidadPjs = ambosEquipos.getPjsEnParty();
+            int[] turnosAux = new int[cantidadPjs];
+            int tirada = 0;
+            int turno_total = 0;
+            Personaje aux;
+
+            for (int i = 0; i < cantidadPjs; i++) {
+                aux = ambosEquipos.getParty().get(i);
+                tirada = (int) (Math.random() * 100 + 1);
+                turno_total = aux.getTurnoBase() + tirada;
+                turnosAux[i] = turno_total;
+            }
+
+            int[] turnosOrdenados = new int[cantidadPjs];
+            int posMay;
+            Equipo ambosEquiposOrdenados = new Equipo();
+
+            for (int i = 0; i < cantidadPjs; i++) {
+                posMay = posDelMayor(turnosAux);
+                turnosOrdenados[i] = turnosAux[posMay];
+                turnosAux[posMay] = 0;
+                ambosEquiposOrdenados.getParty().add(ambosEquipos.getParty().get(posMay));
+                System.out.println(i+1 + ". " + ambosEquiposOrdenados.getParty().get(i).getNombre() + " (" + turnosOrdenados[i] + ")");
+            }
+
+            System.out.println("¿Otro turno?(s/n): ");
+            c = sc.next().toLowerCase().charAt(0);
+            if(c == 'n')
+                fin = true;
+
+            numeroDeTurnos++;
+        }while(!fin);
+    }
+
+    private static int posDelMayor(int[] turnos){
+        int ret = 0;
+        int masAlto = 0;
+        for (int i = 0; i < turnos.length; i++) {
+            if(turnos[i] >= masAlto) {
+                masAlto = turnos[i];
+                ret = i;
+            }
+        }
+        return ret;
     }
 
     private static void crearEquipo(){
@@ -130,6 +214,9 @@ public class Main {
     private static void mostrarEquipos(){
 
         Scanner sc = new Scanner(System.in);
+
+        clear();
+
         if(equipos.size() > 1) {
             for (int i = 0; i < equipos.size(); i++) {
                 System.out.println("");
@@ -232,7 +319,6 @@ public class Main {
 
     }
 
-
     public static Personaje pjAAñadir(){
 
         Scanner sc = new Scanner(System.in);
@@ -267,6 +353,12 @@ public class Main {
         }
         System.out.println("Ahora el equipo esta así: ");
         eq.mostrarParty();
+    }
+
+    private static void clear(){
+        /*for(int i = 0; i < 20; i++){
+            System.out.println();
+        }*/
     }
 
 }

@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 
 public class Combate {
-    ArrayList<Equipo> equipos;
+    Equipo equipoUno;
+    Equipo equipoDos;
 
-    public Combate(Equipo aliados, Equipo enemigos){
-        equipos.add(aliados);
-        equipos.add(enemigos);
+    public Combate(Equipo equipoUno, Equipo equipoDos){
+        this.equipoUno = equipoUno;
+        this.equipoDos = equipoDos;
     }
 
 

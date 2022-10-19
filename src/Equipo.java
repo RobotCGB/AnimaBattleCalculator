@@ -10,6 +10,21 @@ public class Equipo {
         this.party = party;
     }
 
+    public Equipo(Equipo party1, Equipo party2){
+        ArrayList<Personaje> aux1 = party1.getParty();
+        ArrayList<Personaje> aux2 = party2.getParty();
+        ArrayList<Personaje> aux3 = new ArrayList<>();
+        aux3.addAll(aux1);
+        aux3.addAll(aux2);
+        this.party = aux3;
+        this.nombre = "auxDosEquipos";
+    }
+
+    public Equipo(){
+        this.nombre = "vacio";
+        this.party = new ArrayList<>();
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -18,9 +33,16 @@ public class Equipo {
         this.nombre = nombre;
     }
 
-    public void mostrarParty(){
-        for(int i = 0; i < party.size(); i++){
-            System.out.print(party.get(i).getNombre() + ", ");
+    public ArrayList<Personaje> getParty() {
+        return party;
+    }
+
+    public void mostrarParty() {
+        for (int i = 0; i < party.size(); i++) {
+            System.out.print(party.get(i).getNombre());
+            if (i != party.size() - 1) {
+                System.out.print(", ");
+            }
         }
     }
 
@@ -77,6 +99,10 @@ public class Equipo {
 
     public void añadirMasillaParty(Personaje pjAñadir){
         party.add(pjAñadir);
+    }
+
+    public int getPjsEnParty(){
+        return party.size();
     }
 
 

@@ -19,6 +19,10 @@ public class Personaje {
         return nombre;
     }
 
+    public int getTurnoBase() {
+        return turnoBase;
+    }
+
     @Override
     public String toString(){
         return nombre;
