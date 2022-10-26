@@ -5,6 +5,7 @@ public class Personaje {
     private int HDbase;
     private int turnoBase;
     private int danoBase;
+    Colores color;
 
     public Personaje(String nombre, int salud, int HAbase, int HDbase, int turnoBase, int danoBase){
         this.nombre = nombre;
@@ -13,6 +14,7 @@ public class Personaje {
         this.HDbase = HDbase;
         this.turnoBase = turnoBase;
         this.danoBase = danoBase;
+        this.color = Colores.VACIO;
     }
 
     public String getNombre() {
@@ -25,6 +27,14 @@ public class Personaje {
 
     public int getTurnoBase() {
         return turnoBase;
+    }
+
+    public Colores getColor() {
+        return color;
+    }
+
+    public void setColor(Colores color) {
+        this.color = color;
     }
 
     @Override

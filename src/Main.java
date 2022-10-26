@@ -109,8 +109,8 @@ public class Main {
         boolean fin = false;
         char c = 'n';
 
-        eqUno = pedirEquipo();
-        eqDos = pedirEquipo();
+        eqUno = pedirEquipoUno();
+        eqDos = pedirEquipoDos();
 
         HashMap<Integer, Personaje> personajesYTurno;
 
@@ -190,7 +190,7 @@ public class Main {
 
         for (int i = 0; i < cantidadPjs; i++) {
             aux = ambosEquipos.getParty().get(i);
-            tirada = (int) (Math.random() * 100 + 1);
+            tirada = d100ParaTurno();
             turno_total = aux.getTurnoBase() + tirada;
             turnosAux[i] = turno_total;
         }
@@ -203,12 +203,12 @@ public class Main {
             turnoOrdenados = turnosAux[posMay];
             turnosAux[posMay] = 0;
             ret.put(turnoOrdenados, (ambosEquipos.getParty().get(posMay)));
-            System.out.println(i+1 + ". " + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoOrdenados + ")");
+            System.out.println(i+1 + ". " + ambosEquipos.getParty().get(posMay).getColor().getPigmento() + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoOrdenados + ")" + Colores.VACIO.getPigmento());
         }
         return ret;
     }
 
-    private static Equipo pedirEquipo(){
+    private static Equipo pedirEquipoUno(){
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
         Equipo eq = null;
@@ -220,6 +220,32 @@ public class Main {
             if(eq == null){
                 System.out.println("Equipo no valido");
             } else{
+                for (int i = 0; i < eq.party.size(); i++) {
+                    eq.getParty().get(i).setColor(Colores.AZUL);
+                }
+
+                ok = true;
+            }
+        }
+        return eq;
+    }
+
+    private static Equipo pedirEquipoDos(){
+        Scanner sc = new Scanner(System.in);
+        boolean ok = false;
+        Equipo eq = null;
+        while(!ok) {
+            System.out.println("Equipos a elegir: ");
+            mostrarEquipos();
+            System.out.println("Elige un equipo: ");
+            eq = getEquipoPorNombre(sc.nextLine());
+            if(eq == null){
+                System.out.println("Equipo no valido");
+            } else{
+                for (int i = 0; i < eq.party.size(); i++) {
+                    eq.getParty().get(i).setColor(Colores.ROJO);
+                }
+
                 ok = true;
             }
         }

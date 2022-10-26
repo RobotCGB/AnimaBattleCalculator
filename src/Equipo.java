@@ -109,5 +109,4 @@ public class Equipo {
         party.get(i).setNombre(nom);
     }
 
-
 }
