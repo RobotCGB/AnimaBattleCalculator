@@ -9,16 +9,20 @@ public class Combate {
     Equipo ambosEquipos;
     ArrayList<Personaje> alPjOrd = new ArrayList<>();
     ArrayList<Integer> alTurnoOrd = new ArrayList<>();
+    int numeroDeTurnos = 1;
 
     public Combate(Equipo equipoUno, Equipo equipoDos){
         this.equipoUno = equipoUno;
         this.equipoDos = equipoDos;
     }
 
+    public void iniciarCombate(){
+
+    }
+
     public void continuarCombate(){
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
-        int numeroDeTurnos = 1;
         boolean fin = false;
         char c = 'n';
 
@@ -168,6 +172,17 @@ public class Combate {
         totalHD = tiradaHD + enem.getHDbase();
         System.out.println(tiradaHD + " (tirada) + " + enem.getHDbase() + " (base) = " + totalHD);
 
+    }
+
+    private int calcularDano(int HA, int HD, int dano){
+        int dif = HA - HD;
+        int danoTot = 0;
+        if(dif >= 0){
+            danoTot = (dano * dif) / 100;
+        } else {
+            danoTot = -1;
+        }
+            return danoTot;
     }
 
     private void realizarAccion(){
