@@ -37,6 +37,30 @@ public class Personaje {
         this.color = color;
     }
 
+    public int getHAbase() {
+        return HAbase;
+    }
+
+    public int getHDbase() {
+        return HDbase;
+    }
+
+    public int getDanoBase() {
+        return danoBase;
+    }
+
+    public int getSalud() {
+        return salud;
+    }
+
+    public void setHAbase(int HAbase) {
+        this.HAbase = HAbase;
+    }
+
+    public void setDanoBase(int danoBase) {
+        this.danoBase = danoBase;
+    }
+
     @Override
     public String toString(){
         return nombre;

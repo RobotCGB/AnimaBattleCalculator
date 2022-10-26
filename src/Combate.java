@@ -6,6 +6,9 @@ import java.util.Scanner;
 public class Combate {
     Equipo equipoUno;
     Equipo equipoDos;
+    Equipo ambosEquipos;
+    ArrayList<Personaje> alPjOrd = new ArrayList<>();
+    ArrayList<Integer> alTurnoOrd = new ArrayList<>();
 
     public Combate(Equipo equipoUno, Equipo equipoDos){
         this.equipoUno = equipoUno;
@@ -23,20 +26,6 @@ public class Combate {
 
         do{
             personajesYTurno = getSortedMapTurnoYPj(numeroDeTurnos, equipoUno, equipoDos);
-
-            for(Map.Entry<Integer,Personaje> entry : personajesYTurno.entrySet()){
-                Integer turnoAct = entry.getKey();
-                Personaje pjAct = entry.getValue();
-                System.out.println("¿Que va a hacer " + pjAct.getNombre() + "?");
-                switch (elegirAccionTurno()){
-                    case 0 -> System.out.println(pjAct.getNombre() + " no hizo nada");
-                    case 1 -> realizarAtaque(pjAct);
-                    case 2 -> realizarAccion(pjAct);
-                    default -> {
-                        System.out.println("Error");
-                    }
-                }
-            }
 
             System.out.println("¿Otro turno?(s/n): ");
             c = sc.next().toLowerCase().charAt(0);
@@ -75,7 +64,7 @@ public class Combate {
         System.out.println("Tiramos turno...");
         System.out.println();
 
-        Equipo ambosEquipos = new Equipo(eqUno, eqDos);
+        ambosEquipos = new Equipo(eqUno, eqDos);
 
         int cantidadPjs = ambosEquipos.getPjsEnParty();
         int[] turnosAux = new int[cantidadPjs];
@@ -92,26 +81,101 @@ public class Combate {
 
         int turnoOrdenados;
         int posMay;
+        Personaje pjMay = null;
 
         for (int i = 0; i < cantidadPjs; i++) {
             posMay = posDelMayor(turnosAux);
             turnoOrdenados = turnosAux[posMay];
             turnosAux[posMay] = 0;
+            alPjOrd.add(ambosEquipos.getParty().get(posMay));
+            alTurnoOrd.add(turnoOrdenados);
             ret.put(turnoOrdenados, (ambosEquipos.getParty().get(posMay)));
-            System.out.println(i+1 + ". " + ambosEquipos.getParty().get(posMay).getColor().getPigmento() + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoOrdenados + ")" + Colores.VACIO.getPigmento());
+            System.out.println(i+1 + ". " + alPjOrd.get(i).getColor().getPigmento() + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoOrdenados + ")" + Colores.VACIO.getPigmento());
+
         }
+        for (int i = 0; i < cantidadPjs; i++) {
+            System.out.println("¿Que va a hacer " + alPjOrd.get(i).getNombre() + "?");
+            switch (elegirAccionTurno()){
+                case 0 -> System.out.println(alPjOrd.get(i).getNombre() + " no hizo nada");
+                case 1 -> realizarAtaque(alPjOrd.get(i));
+                case 2 -> realizarAccion();
+                default -> {
+                    System.out.println("Error");
+                }
+            }
+        }
+
         return ret;
     }
 
     private void realizarAtaque(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        boolean ok = false;
+        int i = 0;
+        Personaje enem = null;
+        String nombre = null;
+        char c = 's';
+        int tiradaHA;
+        int tiradaHD;
+        int totalHA;
+        int totalHD;
+
+        System.out.println("Tu habilidad de ataque es: " + pj.getHAbase());
+        System.out.println("¿Es correcto?(s/n): ");
+        c = sc.next().toLowerCase().charAt(0);
+        if(c == 'n'){
+            System.out.println("Entonces, ¿cual es ahora?: ");
+            pj.setHAbase(sc.nextInt());
+            System.out.println("Correcto, ahora tu HA es: " + pj.getHAbase());
+        }
+        System.out.println("Tu daño es: " + pj.getDanoBase());
+        System.out.println("¿Es correcto?(s/n): ");
+        c = sc.next().toLowerCase().charAt(0);
+        if(c == 'n'){
+            System.out.println("Entonces, ¿cual es ahora?: ");
+            pj.setDanoBase(sc.nextInt());
+            System.out.println("Correcto, ahora tu daño es: " + pj.getDanoBase());
+        }
+        System.out.println("Estos son los personajes atacables: ");
+        ambosEquipos.mostrarParty();
+        sc = new Scanner(System.in);
+        do {
+            System.out.println("¿A quien atacas?: ");
+            nombre = sc.nextLine();
+            while (!ok && i < ambosEquipos.getPjsEnParty()) {
+                if (ambosEquipos.getParty().get(i).getNombre().equals(nombre)) {
+                    ok = true;
+                    enem = ambosEquipos.getParty().get(i);
+                    System.out.println("Personaje: " + enem.getNombre() + " seleccionado");
+                }
+                i++;
+            }
+            if (enem == null)
+                System.out.println("No se ha encontrado el personaje, vuelve a insertar pj.");
+        } while(enem == null);
+        System.out.println("Su habilidad de defensa es: " + enem.getHDbase());
+        System.out.println("¿Es correcto?(s/n): ");
+        c = sc.next().toLowerCase().charAt(0);
+        if(c == 'n'){
+            System.out.println("Entonces, ¿cual es ahora?: ");
+            enem.setHAbase(sc.nextInt());
+            System.out.println("Correcto, ahora tu HD es: " + enem.getHDbase());
+        }
+        tiradaHA = d100conAbierta();
+        totalHA = tiradaHA + pj.getHAbase();
+        System.out.println(tiradaHA + " (tirada) + " + pj.getHAbase() + " (base) = " + totalHA);
+        tiradaHD = d100conAbierta();
+        totalHD = tiradaHD + enem.getHDbase();
+        System.out.println(tiradaHD + " (tirada) + " + enem.getHDbase() + " (base) = " + totalHD);
 
     }
 
-    private void realizarAccion(Personaje pj){
+    private void realizarAccion(){
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce valor base con los posibles bonos: ");
+        System.out.println("Introduce valor base con todos los posibles bonos: ");
         int base = sc.nextInt();
-
+        int tirada = d100conAbierta();
+        System.out.println(base + " + " + tirada + " = " + (base+tirada));
 
     }
 
