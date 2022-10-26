@@ -122,7 +122,7 @@ public class Main {
                 Personaje pjAct = entry.getValue();
                 System.out.println("¿Que va a hacer " + pjAct.getNombre() + "?");
                 switch (elegirAccionTurno()){
-                    case 0 -> System.out.println(pjAct.getNombre() + "no hizo nada");
+                    case 0 -> System.out.println(pjAct.getNombre() + " no hizo nada");
                     case 1 -> realizarAtaque(pjAct);
                     case 2 -> realizarAccion(pjAct);
                     default -> {
@@ -282,6 +282,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
         ArrayList<Personaje> party = new ArrayList<>();
+        char opMasilla = 'n';
 
         System.out.println("Elige el nombre del equipo: ");
         String nombre = sc.nextLine();
@@ -296,6 +297,9 @@ public class Main {
             mostrarPersonajes();
             System.out.println("Elige personaje que añadir: ");
             select = sc.nextLine();
+            if(select.equals("nadie")){
+                System.out.println("Saliendo... ");
+            }
             aux = getPersonajePorNombre(select);
             if (aux != null) {
                 party.add(aux);
@@ -305,6 +309,17 @@ public class Main {
         } while(c != 'n');
 
         Equipo eq = new Equipo(nombre, party);
+
+        System.out.println("¿Quieres meter masillas?(s/n): ");
+        opMasilla = sc.next().toLowerCase().charAt(0);
+
+        if(opMasilla == 's'){
+            while(opMasilla == 's') {
+                añadirMasillas(eq);
+                System.out.println("¿Quieres añadir otro masilla?(s/n): ");
+                opMasilla = sc.next().toLowerCase().charAt(0);
+            }
+        }
         
         equipos.add(eq);
 
@@ -349,6 +364,22 @@ public class Main {
                 ok = true;
                 ret = personajes.get(i);
                 System.out.println("Personaje: " + ret.getNombre() + " seleccionado");
+            }
+            i++;
+        }
+        if(ret == null)
+            System.out.println("No se ha encontrado el personaje");
+        return ret;
+    }
+
+    public static Personaje getPersonajePorNombreSilent(String nombre){
+        boolean ok = false;
+        int i = 0;
+        Personaje ret = null;
+        while(!ok && i < personajes.size()){
+            if(personajes.get(i).getNombre().equals(nombre)){
+                ok = true;
+                ret = personajes.get(i);
             }
             i++;
         }
@@ -443,19 +474,31 @@ public class Main {
         Personaje ret = null;
         String pjSelec = null;
         int veces = 0;
+        boolean ok = false;
+        String pjNomAux = null;
+        String pjNomBase = null;
 
         System.out.println("Personajes disponibles: ");
         mostrarPersonajes();
         System.out.println("Elige que tipo de masillas añadir: ");
         pjSelec = sc.nextLine();
-        System.out.println("Dime la cantidad que quieres introducir: ");
-        veces = sc.nextInt();
+        ret = getPersonajePorNombreSilent(pjSelec);
+        if(ret != null) {
+            System.out.println("Dime la cantidad que quieres introducir: ");
+            veces = sc.nextInt();
+            pjNomBase = ret.getNombre();
 
-        for(int i = 0; i < veces; i++){
-            eq.añadirMasillaParty(getPersonajePorNombre(pjSelec));
+            for (int i = 0; i < veces; i++) {
+                pjNomAux = pjNomBase + "#" + (i+1);
+                eq.añadirMasillaParty(ret.clona());
+                eq.setNombreIndex(i,pjNomAux);
+            }
+            System.out.println("Personaje: " + pjSelec + " seleccionado");
         }
+        System.out.println();
         System.out.println("Ahora el equipo esta así: ");
         eq.mostrarParty();
+        System.out.println();
     }
 
     private static void clear(){

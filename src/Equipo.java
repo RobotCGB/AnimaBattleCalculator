@@ -105,5 +105,9 @@ public class Equipo {
         return party.size();
     }
 
+    public void setNombreIndex(int i, String nom){
+        party.get(i).setNombre(nom);
+    }
+
 
 }

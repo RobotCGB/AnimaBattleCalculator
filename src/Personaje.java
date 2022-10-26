@@ -19,6 +19,10 @@ public class Personaje {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public int getTurnoBase() {
         return turnoBase;
     }
@@ -26,6 +30,11 @@ public class Personaje {
     @Override
     public String toString(){
         return nombre;
+    }
+
+    public Personaje clona(){
+        Personaje ret = new Personaje(this.nombre, this.salud, this.HAbase, this.HDbase, this.turnoBase, this.danoBase);
+        return ret;
     }
 
 
