@@ -171,6 +171,21 @@ public class Combate {
         tiradaHD = d100conAbierta();
         totalHD = tiradaHD + enem.getHDbase();
         System.out.println(tiradaHD + " (tirada) + " + enem.getHDbase() + " (base) = " + totalHD);
+        int dano = calcularDano(totalHA, totalHD, pj.getDanoBase());
+
+        System.out.println("El daño ejercido ha sido: " + dano);
+        System.out.println("¿Quieres que se aplique?: ");
+        c = sc.next().toLowerCase().charAt(0);
+        sc = new Scanner(System.in);
+        if(c == 's'){
+            enem.setSalud(enem.getSalud() - dano);
+            System.out.println("Daño aplicado");
+        } else {
+            System.out.println("Indica el daño aplicado entonces: ");
+            dano = sc.nextInt();
+        }
+
+        System.out.println("A " + enem.getNombre() + " le quedan " + enem.getSalud() + " puntos de vida");
 
     }
 

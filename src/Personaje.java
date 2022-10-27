@@ -61,6 +61,10 @@ public class Personaje {
         this.danoBase = danoBase;
     }
 
+    public void setSalud(int salud) {
+        this.salud = salud;
+    }
+
     @Override
     public String toString(){
         return nombre;
