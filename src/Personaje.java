@@ -71,8 +71,7 @@ public class Personaje {
     }
 
     public Personaje clona(){
-        Personaje ret = new Personaje(this.nombre, this.salud, this.HAbase, this.HDbase, this.turnoBase, this.danoBase);
-        return ret;
+        return new Personaje(this.nombre, this.salud, this.HAbase, this.HDbase, this.turnoBase, this.danoBase);
     }
 
 

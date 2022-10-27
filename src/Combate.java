@@ -1,19 +1,18 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Combate {
-    Equipo equipoUno;
-    Equipo equipoDos;
     Equipo ambosEquipos;
     ArrayList<Personaje> alPjOrd = new ArrayList<>();
     ArrayList<Integer> alTurnoOrd = new ArrayList<>();
     int numeroDeTurnos = 1;
+    int cantidadPjs;
+    View view = new View();
 
     public Combate(Equipo equipoUno, Equipo equipoDos){
-        this.equipoUno = equipoUno;
-        this.equipoDos = equipoDos;
+        this.ambosEquipos = new Equipo(equipoUno, equipoDos);
+        this.cantidadPjs = ambosEquipos.getPjsEnParty();
     }
 
     public void iniciarCombate(){
@@ -26,20 +25,65 @@ public class Combate {
         boolean fin = false;
         char c = 'n';
 
-        HashMap<Integer, Personaje> personajesYTurno;
-
         do{
-            personajesYTurno = getSortedMapTurnoYPj(numeroDeTurnos, equipoUno, equipoDos);
+            nuevoTurno();
+            elegirUsoTurno();
 
-            System.out.println("¿Otro turno?(s/n): ");
+            view.showPreguntarOtroTurno();
             c = sc.next().toLowerCase().charAt(0);
             if(c == 'n')
                 fin = true;
             numeroDeTurnos++;
         }while(!fin);
 
+    }
 
+    private void nuevoTurno(){
 
+        view.showContadorTurno(numeroDeTurnos);
+
+        int turnoAux;
+        int posMay;
+
+        int[] turnosDesOrden = calcularTurnos();
+
+        for (int i = 0; i < cantidadPjs; i++) {
+            posMay = posDelMayor(turnosDesOrden);
+            turnoAux = turnosDesOrden[posMay];
+            turnosDesOrden[posMay] = 0;
+            alPjOrd.add(ambosEquipos.getParty().get(posMay));
+            alTurnoOrd.add(turnoAux);
+            view.showTurnoActualPj(i, alPjOrd, ambosEquipos, posMay, turnoAux);
+        }
+
+    }
+
+    private int[] calcularTurnos(){
+        int[] turnosAux = new int[cantidadPjs];
+        Personaje aux;
+        int tirada = 0;
+        int turno_total = 0;
+        for (int i = 0; i < cantidadPjs; i++) {
+            aux = ambosEquipos.getParty().get(i);
+            tirada = d100ParaTurno();
+            turno_total = aux.getTurnoBase() + tirada;
+            turnosAux[i] = turno_total;
+        }
+        return turnosAux;
+    }
+
+    private void elegirUsoTurno(){
+        for (int i = 0; i < ambosEquipos.getPjsEnParty(); i++) {
+            view.showPreguntarAccionPj(alPjOrd.get(i).getNombre());
+            switch (elegirAccionTurno()){
+                case 0 -> view.showInaccionPj(alPjOrd.get(i).getNombre());
+                case 1 -> realizarAtaque(alPjOrd.get(i));
+                case 2 -> realizarAccion();
+                default -> {
+                    view.showError();
+                }
+            }
+        }
     }
 
     private int elegirAccionTurno(){
@@ -47,66 +91,12 @@ public class Combate {
         int ret = 0;
         char c = 's';
         while(c != 'n') {
-            System.out.println("0. Nada");
-            System.out.println("1. Atacar");
-            System.out.println("2. Tirada de habilidad");
+            view.showMostrarOpcionesAccion();
             ret = sc.nextInt();
             if(ret >= 0 && ret <= 2)
                 c = 'n';
             else
-                System.out.println("Haz seleccion en el rango [0-2]");
-        }
-
-        return ret;
-    }
-
-    private HashMap<Integer, Personaje> getSortedMapTurnoYPj(int numeroDeTurnos, Equipo eqUno, Equipo eqDos){
-
-        HashMap<Integer, Personaje> ret = new HashMap<>();
-
-        System.out.println("Turno " + numeroDeTurnos);
-        System.out.println("Tiramos turno...");
-        System.out.println();
-
-        ambosEquipos = new Equipo(eqUno, eqDos);
-
-        int cantidadPjs = ambosEquipos.getPjsEnParty();
-        int[] turnosAux = new int[cantidadPjs];
-        int tirada = 0;
-        int turno_total = 0;
-        Personaje aux;
-
-        for (int i = 0; i < cantidadPjs; i++) {
-            aux = ambosEquipos.getParty().get(i);
-            tirada = d100ParaTurno();
-            turno_total = aux.getTurnoBase() + tirada;
-            turnosAux[i] = turno_total;
-        }
-
-        int turnoOrdenados;
-        int posMay;
-        Personaje pjMay = null;
-
-        for (int i = 0; i < cantidadPjs; i++) {
-            posMay = posDelMayor(turnosAux);
-            turnoOrdenados = turnosAux[posMay];
-            turnosAux[posMay] = 0;
-            alPjOrd.add(ambosEquipos.getParty().get(posMay));
-            alTurnoOrd.add(turnoOrdenados);
-            ret.put(turnoOrdenados, (ambosEquipos.getParty().get(posMay)));
-            System.out.println(i+1 + ". " + alPjOrd.get(i).getColor().getPigmento() + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoOrdenados + ")" + Colores.VACIO.getPigmento());
-
-        }
-        for (int i = 0; i < cantidadPjs; i++) {
-            System.out.println("¿Que va a hacer " + alPjOrd.get(i).getNombre() + "?");
-            switch (elegirAccionTurno()){
-                case 0 -> System.out.println(alPjOrd.get(i).getNombre() + " no hizo nada");
-                case 1 -> realizarAtaque(alPjOrd.get(i));
-                case 2 -> realizarAccion();
-                default -> {
-                    System.out.println("Error");
-                }
-            }
+                view.showErrorRangoCeroDos();
         }
 
         return ret;
@@ -124,8 +114,7 @@ public class Combate {
         int totalHA;
         int totalHD;
 
-        System.out.println("Tu habilidad de ataque es: " + pj.getHAbase());
-        System.out.println("¿Es correcto?(s/n): ");
+        view.showPreguntarHApj(pj.getHAbase());
         c = sc.next().toLowerCase().charAt(0);
         if(c == 'n'){
             System.out.println("Entonces, ¿cual es ahora?: ");
@@ -141,7 +130,7 @@ public class Combate {
             System.out.println("Correcto, ahora tu daño es: " + pj.getDanoBase());
         }
         System.out.println("Estos son los personajes atacables: ");
-        ambosEquipos.mostrarParty();
+        view.showMostrarParty(ambosEquipos.getParty());
         sc = new Scanner(System.in);
         do {
             System.out.println("¿A quien atacas?: ");
@@ -150,12 +139,12 @@ public class Combate {
                 if (ambosEquipos.getParty().get(i).getNombre().equals(nombre)) {
                     ok = true;
                     enem = ambosEquipos.getParty().get(i);
-                    System.out.println("Personaje: " + enem.getNombre() + " seleccionado");
+                    view.showPjSelecCorrecto(enem);
                 }
                 i++;
             }
             if (enem == null)
-                System.out.println("No se ha encontrado el personaje, vuelve a insertar pj.");
+                view.showErrorPjNoEncontrado();
         } while(enem == null);
         System.out.println("Su habilidad de defensa es: " + enem.getHDbase());
         System.out.println("¿Es correcto?(s/n): ");
@@ -185,7 +174,7 @@ public class Combate {
             dano = sc.nextInt();
         }
 
-        System.out.println("A " + enem.getNombre() + " le quedan " + enem.getSalud() + " puntos de vida");
+        view.showSaludRestantePj(enem);
 
     }
 
@@ -202,10 +191,10 @@ public class Combate {
 
     private void realizarAccion(){
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce valor base con todos los posibles bonos: ");
+        view.showPedirBase();
         int base = sc.nextInt();
         int tirada = d100conAbierta();
-        System.out.println(base + " + " + tirada + " = " + (base+tirada));
+        view.showSumaTirada(base, tirada);
 
     }
 

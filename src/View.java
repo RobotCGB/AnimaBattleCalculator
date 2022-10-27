@@ -3,11 +3,6 @@ import java.util.Scanner;
 
 public class View {
 
-    Equipo equipo;
-    Personaje pj;
-    ArrayList<Equipo> equipos;
-    ArrayList<Personaje> pjs;
-
     public View(){
 
     }
@@ -20,7 +15,7 @@ public class View {
         System.out.println("Bienvenido a Anima Battle Calculator (ABC): ");
     }
 
-    public void showTodosEquipos(){
+    public void showTodosEquipos(ArrayList<Equipo> equipos){
 
         if(equipos.size() > 1) {
             for (int i = 0; i < equipos.size(); i++) {
@@ -42,8 +37,8 @@ public class View {
 
     }
 
-    public void showTodosPersonajes(){
-        System.out.println(pjs.toString());
+    public void showTodosPersonajes(ArrayList<Personaje> personajes){
+        System.out.println(personajes.toString());
     }
 
     public void showOpcionesUso(){
@@ -58,21 +53,33 @@ public class View {
         System.out.println("Elige: ");
     }
 
-    public void showMostrarYPedirEquipos(){
+    public void showPedirBase(){
+        System.out.println("Introduce valor base con todos los posibles bonos: ");
+    }
+
+    public void showSumaTirada(int base, int tirada){
+        System.out.println(base + " + " + tirada + " = " + (base+tirada));
+    }
+
+    public void showTurnoActualPj(int i, ArrayList<Personaje> alPjOrd, Equipo ambosEquipos, int posMay, int turnoAux){
+        System.out.println(i+1 + ". " + alPjOrd.get(i).getColor().getPigmento() + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoAux + ")" + Colores.VACIO.getPigmento());
+    }
+
+    public void showMostrarYPedirEquipos(ArrayList<Equipo> equipos){
         System.out.println("Equipos a elegir: ");
-        showTodosEquipos();
+        showTodosEquipos(equipos);
         System.out.println("Elige un equipo: ");
     }
 
-    public void showMostrarYPedirPersonajes(){
+    public void showMostrarYPedirPersonajes(ArrayList<Personaje> personajes){
         System.out.println("Personajes elegibles: ");
-        showTodosPersonajes();
+        showTodosPersonajes(personajes);
         System.out.println("Elige personaje que añadir: ");
     }
 
-    public void showMostrarYPedirMasillas(){
+    public void showMostrarYPedirMasillas(ArrayList<Personaje> personajes){
         System.out.println("Personajes elegibles: ");
-        showTodosPersonajes();
+        showTodosPersonajes(personajes);
         System.out.println("Elige que tipo de masillas añadir: ");
     }
 
@@ -87,6 +94,7 @@ public class View {
                 System.out.print(", ");
             }
         }
+        System.out.println();
     }
 
     public void showEligeNombre(){
@@ -106,14 +114,26 @@ public class View {
         showMostrarParty(eq.getParty());
     }
 
+    public void showNombreEstadoActual(String nombre){
+        System.out.println("Ahora el nombre es este: " + nombre + "\n");
+    }
+
     public void showPjSelecCorrecto(Personaje pjSelec){
         System.out.println("Personaje: " + pjSelec + " seleccionado");
     }
 
-    public void showMostrarYPedirEquiposEditar(){
+    public void showMostrarYPedirEquiposEditar(ArrayList<Equipo> equipos){
         System.out.println("Estos son los equipos a editar: ");
-        showTodosEquipos();
+        showTodosEquipos(equipos);
         System.out.println("¿Cual quieres?: ");
+    }
+
+    public void showErrorPjNoEncontrado(){
+        System.out.println("No se ha encontrado el personaje, vuelve a insertar pj.");
+    }
+
+    public void showSaludRestantePj(Personaje pj){
+        System.out.println("A " + pj.getNombre() + " le quedan " + pj.getSalud() + " puntos de vida");
     }
 
     public void showMostrarOpcionesEditar(){
@@ -161,6 +181,42 @@ public class View {
 
     public void showSaliendo(){
         System.out.println("Saliendo... ");
+    }
+
+    public void showGuardando(){
+        System.out.println("Guardando...");
+    }
+
+    public void showPreguntarOtroTurno(){
+        System.out.println("¿Otro turno?(s/n): ");
+    }
+
+    public void showMostrarOpcionesAccion(){
+        System.out.println("0. Nada");
+        System.out.println("1. Atacar");
+        System.out.println("2. Tirada de habilidad");
+    }
+
+    public void showErrorRangoCeroDos(){
+        System.out.println("Haz seleccion en el rango [0-2]");
+    }
+
+    public void showContadorTurno(int numeroDeTurnos){
+        System.out.println("Turno " + numeroDeTurnos);
+        System.out.println("Tiramos turno...");
+    }
+
+    public void showPreguntarAccionPj(String nombre){
+        System.out.println("¿Que va a hacer " + nombre + "?");
+    }
+
+    public void showInaccionPj(String nombre){
+        System.out.println(nombre + " no hizo nada");
+    }
+
+    public void showPreguntarHApj(int HA){
+        System.out.println("Tu habilidad de ataque es: " + HA);
+        System.out.println("¿Es correcto?(s/n): ");
     }
 
     public void clear(){

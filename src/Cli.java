@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -5,25 +6,31 @@ public class Cli {
 
     Scanner sc = new Scanner(System.in);
     View view = new View();
-    ArrayList<Personaje> personajes = new ArrayList<>();
-    ArrayList<Equipo> equipos = new ArrayList<>();
+    ArrayList<Personaje> personajes;
+    ArrayList<Equipo> equipos;
 
-    public Cli(){
+    public Cli() {
+        this.personajes = new ArrayList<>();
+        this.equipos = new ArrayList<>();
+    }
 
+    public Cli(ArrayList<Personaje> personajes, ArrayList<Equipo> equipos) {
+        this.personajes = personajes;
+        this.equipos = equipos;
     }
 
     public void run(){
         char opcion = 'n';
 
         view.showIntroduccion();
-        while(opcion != 's') {
+        while (opcion != 's') {
             switch (elegirUso()) {
                 case 0 -> opcion = 's';
                 case 1 -> empezarCombate();
                 case 2 -> crearPersonaje();
                 case 3 -> crearEquipo();
-                case 4 -> view.showTodosPersonajes();
-                case 5 -> view.showTodosEquipos();
+                case 4 -> view.showTodosPersonajes(personajes);
+                case 5 -> view.showTodosEquipos(equipos);
                 case 6 -> editarEquipos();
                 default -> view.showError();
             }
@@ -31,13 +38,13 @@ public class Cli {
         }
     }
 
-    private int elegirUso(){
+    private int elegirUso() {
         Scanner sc = new Scanner(System.in);
         view.showOpcionesUso();
         return sc.nextInt();
     }
 
-    private void empezarCombate(){
+    private void empezarCombate() {
         Equipo eq1 = pedirEquipoUno();
         Equipo eq2 = pedirEquipoDos();
 
@@ -46,16 +53,18 @@ public class Cli {
 
     }
 
-    private Equipo pedirEquipoUno(){
+    private Equipo pedirEquipoUno() {
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
         Equipo eq = null;
-        while(!ok) {
-            view.showMostrarYPedirEquipos();
-            eq = getEquipoPorNombre(sc.nextLine());
-            if(eq == null){
+        Equipo eqAux = null;
+        while (!ok) {
+            view.showMostrarYPedirEquipos(equipos);
+            eqAux = getEquipoPorNombre(sc.nextLine());
+            eq = eqAux.clona();
+            if (eq == null) {
                 view.showError();
-            } else{
+            } else {
                 for (int i = 0; i < eq.party.size(); i++) {
                     eq.getParty().get(i).setColor(Colores.AZUL);
                 }
@@ -65,16 +74,16 @@ public class Cli {
         return eq;
     }
 
-    private Equipo pedirEquipoDos(){
+    private Equipo pedirEquipoDos() {
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
         Equipo eq = null;
-        while(!ok) {
-            view.showMostrarYPedirEquipos();
+        while (!ok) {
+            view.showMostrarYPedirEquipos(equipos);
             eq = getEquipoPorNombre(sc.nextLine());
-            if(eq == null){
+            if (eq == null) {
                 view.showError();
-            } else{
+            } else {
                 for (int i = 0; i < eq.party.size(); i++) {
                     eq.getParty().get(i).setColor(Colores.ROJO);
                 }
@@ -84,7 +93,7 @@ public class Cli {
         return eq;
     }
 
-    private void crearPersonaje(){
+    private void crearPersonaje() {
 
         Scanner sc = new Scanner(System.in);
 
@@ -106,27 +115,36 @@ public class Cli {
         view.showPedirDano();
         int danoBase = sc.nextInt();
 
-        Personaje pj = new Personaje(nombre,salud, HAbase, HDbase, turnoBase, danoBase);
-        personajes.add(pj);
+        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase));
 
     }
 
-    private void crearEquipo(){
+    private void crearEquipo() {
         Scanner sc = new Scanner(System.in);
-        boolean ok = false;
-        ArrayList<Personaje> party = new ArrayList<>();
-        char opMasilla = 'n';
 
+        Equipo eq = new Equipo(preguntarNombre(), preguntarParty());
+
+        preguntarMasilla(eq);
+
+        equipos.add(eq);
+
+    }
+
+    public String preguntarNombre(){
         view.showEligeNombre();
-        String nombre = sc.nextLine();
-        char c;
-        String select = null;
+        return sc.nextLine();
+    }
 
+    public ArrayList<Personaje> preguntarParty(){
+
+        ArrayList<Personaje> party = new ArrayList<>();
+        String select = null;
         Personaje aux = null;
+        char c;
 
         do {
             sc = new Scanner(System.in);
-            view.showMostrarYPedirPersonajes();
+            view.showMostrarYPedirPersonajes(personajes);
             select = sc.nextLine();
             aux = getPersonajePorNombre(select);
             if (aux != null) {
@@ -134,61 +152,60 @@ public class Cli {
             }
             view.showPreguntarSiMas();
             c = sc.next().toLowerCase().charAt(0);
-        } while(c != 'n');
+        } while (c != 'n');
+        return party;
+    }
 
-        Equipo eq = new Equipo(nombre, party);
-
+    public void preguntarMasilla(Equipo eq){
+        char opMasilla;
         view.showPreguntarSiMasillas();
         opMasilla = sc.next().toLowerCase().charAt(0);
 
-        if(opMasilla == 's'){
-            while(opMasilla == 's') {
-                añadirMasillas(eq);
+        if (opMasilla == 's') {
+            while (opMasilla == 's') {
+                anadirMasillas(eq);
                 view.showPreguntarSiMas();
                 opMasilla = sc.next().toLowerCase().charAt(0);
             }
         }
-
-        equipos.add(eq);
-
     }
 
-    public Personaje getPersonajePorNombre(String nombre){
+    public Personaje getPersonajePorNombre(String nombre) {
         boolean ok = false;
         int i = 0;
         Personaje ret = null;
-        while(!ok && i < personajes.size()){
-            if(personajes.get(i).getNombre().equals(nombre)){
+        while (!ok && i < personajes.size()) {
+            if (personajes.get(i).getNombre().equals(nombre)) {
                 ok = true;
                 ret = personajes.get(i);
                 view.showPjSelecCorrecto(ret);
             }
             i++;
         }
-        if(ret == null)
+        if (ret == null)
             view.showError();
         return ret;
     }
 
-    public Personaje getPersonajePorNombreSilent(String nombre){
+    public Personaje getPersonajePorNombreSilent(String nombre) {
         boolean ok = false;
         int i = 0;
         Personaje ret = null;
-        while(!ok && i < personajes.size()){
-            if(personajes.get(i).getNombre().equals(nombre)){
+        while (!ok && i < personajes.size()) {
+            if (personajes.get(i).getNombre().equals(nombre)) {
                 ok = true;
                 ret = personajes.get(i);
             }
             i++;
         }
-        if(ret == null)
+        if (ret == null)
             view.showError();
         return ret;
     }
 
-    public Equipo getEquipoPorNombre(String nombre){
+    public Equipo getEquipoPorNombre(String nombre) {
 
-        if(equipos.size() > 0) {
+        if (equipos.size() > 0) {
             boolean ok = false;
             int i = 0;
             Equipo ret = null;
@@ -206,27 +223,44 @@ public class Cli {
         }
     }
 
-    public void editarEquipos(){
+    public void editarEquipos() {
 
         Scanner sc = new Scanner(System.in);
 
-        view.showMostrarYPedirEquiposEditar();
-        Equipo eqSelec = getEquipoPorNombre(sc.nextLine());
-        view.showCorrectoSeleccionEquipo(eqSelec);
-        view.showMostrarOpcionesEditar();
-        int op = sc.nextInt();
-        switch (op) {
-            case 0 -> view.showSaliendo();
-            case 1 -> eqSelec.añadirPjParty(pjAAñadir());
-            case 2 -> eqSelec.eliminarPjParty(pjAEliminar(eqSelec));
-            case 3 -> eqSelec.cambiarNombre();
-            case 4 -> añadirMasillas(eqSelec);
-            default -> view.showError();
-        }
+        view.showMostrarYPedirEquiposEditar(equipos);
+        String op = sc.nextLine();
+        Equipo eqSelec = getEquipoPorNombre(op);
+        if (eqSelec != null) {
 
+            view.showCorrectoSeleccionEquipo(eqSelec);
+            view.showMostrarOpcionesEditar();
+            int opc = sc.nextInt();
+            switch (opc) {
+                case 0 -> view.showSaliendo();
+                case 1 -> eqSelec.anadirPjParty(pjAAnadir());
+                case 2 -> eqSelec.eliminarPjParty(pjAEliminar(eqSelec));
+                case 3 -> eqSelec.cambiarNombre();
+                case 4 -> anadirMasillas(eqSelec);
+                default -> view.showError();
+            }
+
+        }
     }
 
-    public Personaje pjAEliminar(Equipo eq){
+    public Personaje pjAAnadir() {
+
+        Scanner sc = new Scanner(System.in);
+        Personaje ret = null;
+        String pjSelec = null;
+
+        view.showMostrarYPedirPersonajes(personajes);
+        pjSelec = sc.nextLine();
+        ret = getPersonajePorNombre(pjSelec);
+
+        return ret;
+    }
+
+    public Personaje pjAEliminar(Equipo eq) {
 
         Scanner sc = new Scanner(System.in);
         String pjSelec = null;
@@ -240,20 +274,7 @@ public class Cli {
 
     }
 
-    public Personaje pjAAñadir(){
-
-        Scanner sc = new Scanner(System.in);
-        Personaje ret = null;
-        String pjSelec = null;
-
-        view.showMostrarYPedirPersonajes();
-        pjSelec = sc.nextLine();
-        ret = getPersonajePorNombre(pjSelec);
-
-        return ret;
-    }
-
-    public void añadirMasillas(Equipo eq){
+    public void anadirMasillas(Equipo eq) {
 
         Scanner sc = new Scanner(System.in);
         Personaje ret = null;
@@ -263,22 +284,24 @@ public class Cli {
         String pjNomAux = null;
         String pjNomBase = null;
 
-        view.showMostrarYPedirMasillas();
+        view.showMostrarYPedirMasillas(personajes);
         pjSelec = sc.nextLine();
         ret = getPersonajePorNombreSilent(pjSelec);
-        if(ret != null) {
+        if (ret != null) {
             view.showPreguntaCantidad();
             veces = sc.nextInt();
             pjNomBase = ret.getNombre();
 
             for (int i = 0; i < veces; i++) {
-                pjNomAux = pjNomBase + "#" + (i+1);
-                eq.añadirMasillaParty(ret.clona());
-                eq.setNombreIndex(i,pjNomAux);
+                pjNomAux = pjNomBase + "#" + (i + 1);
+                eq.anadirMasillaParty(ret.clona());
+                eq.setNombreIndex(i, pjNomAux);
             }
             view.showPjSelecCorrecto(getPersonajePorNombre(pjSelec));
         }
         view.showEquipoEstadoActual(eq);
     }
+
+
 
 }

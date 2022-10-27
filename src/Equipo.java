@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class Equipo {
     String nombre;
     ArrayList<Personaje> party;
+    View view = new View();
 
     public Equipo(String nombre, ArrayList<Personaje> party){
         this.nombre = nombre;
@@ -19,6 +20,8 @@ public class Equipo {
         this.party = aux3;
         this.nombre = "auxDosEquipos";
     }
+
+
 
     public Equipo(){
         this.nombre = "vacio";
@@ -37,15 +40,6 @@ public class Equipo {
         return party;
     }
 
-    public void mostrarParty() {
-        for (int i = 0; i < party.size(); i++) {
-            System.out.print(party.get(i).getNombre());
-            if (i != party.size() - 1) {
-                System.out.print(", ");
-            }
-        }
-    }
-
     public Personaje getPjDeParty(String pj){
         Personaje ret = null;
         boolean ok = false;
@@ -57,17 +51,14 @@ public class Equipo {
             }
             i++;
         }
-        System.out.println("\nAhora el equipo esta así: ");
-        mostrarParty();
-        System.out.println();
+        view.showEquipoEstadoActual(this);
+
         return ret;
     }
 
-    public void añadirPjParty(Personaje pjAñadir){
-        party.add(pjAñadir);
-        System.out.println("\nAhora el equipo esta así: ");
-        mostrarParty();
-        System.out.println();
+    public void anadirPjParty(Personaje pjAnadir){
+        party.add(pjAnadir);
+        view.showEquipoEstadoActual(this);
     }
 
     public void eliminarPjParty(Personaje pjElim){
@@ -79,8 +70,7 @@ public class Equipo {
             }
             i++;
         }
-        System.out.println("Ahora el equipo esta así: ");
-        mostrarParty();
+        view.showEquipoEstadoActual(this);
 
     }
 
@@ -89,15 +79,15 @@ public class Equipo {
         Scanner sc = new Scanner(System.in);
         String nombre = null;
 
-        System.out.println("Escribe el nombre nuevo: ");
+        view.showPedirNombre();
         setNombre(sc.nextLine());
 
-        System.out.println("Ahora el nombre es este: " + getNombre() + "\n");
+        view.showNombreEstadoActual(this.nombre);
 
 
     }
 
-    public void añadirMasillaParty(Personaje pjAñadir){
+    public void anadirMasillaParty(Personaje pjAñadir){
         party.add(pjAñadir);
     }
 
@@ -107,6 +97,10 @@ public class Equipo {
 
     public void setNombreIndex(int i, String nom){
         party.get(i).setNombre(nom);
+    }
+
+    public Equipo clona(){
+        return new Equipo(this.getNombre(), this.getParty());
     }
 
 }
