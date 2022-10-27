@@ -133,6 +133,7 @@ public class Combate {
         view.showMostrarParty(ambosEquipos.getParty());
         sc = new Scanner(System.in);
         do {
+            sc = new Scanner(System.in);
             System.out.println("¿A quien atacas?: ");
             nombre = sc.nextLine();
             while (!ok && i < ambosEquipos.getPjsEnParty()) {

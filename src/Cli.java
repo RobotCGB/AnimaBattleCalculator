@@ -209,7 +209,7 @@ public class Cli {
             boolean ok = false;
             int i = 0;
             Equipo ret = null;
-            while (!ok && i < personajes.size()) {
+            while (!ok && i < equipos.size()) {
                 if (nombre.equals(equipos.get(i).getNombre())) {
                     ok = true;
                     ret = equipos.get(i);
