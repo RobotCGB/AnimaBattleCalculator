@@ -32,6 +32,7 @@ public class Cli {
                 case 4 -> view.showTodosPersonajes(personajes);
                 case 5 -> view.showTodosEquipos(equipos);
                 case 6 -> editarEquipos();
+                case 7 -> editarPj();
                 default -> view.showError();
             }
             view.clear();
@@ -59,8 +60,12 @@ public class Cli {
         Equipo eq = null;
         Equipo eqAux = null;
         while (!ok) {
-            view.showMostrarYPedirEquipos(equipos);
-            eqAux = getEquipoPorNombre(sc.nextLine());
+            do {
+                view.showMostrarYPedirEquipos(equipos);
+                eqAux = getEquipoPorNombre(sc.nextLine());
+                if(eqAux == null)
+                    view.showErrorEqNoEncontrado();
+            } while(eqAux == null);
             eq = eqAux.clona();
             if (eq == null) {
                 view.showError();
@@ -78,9 +83,15 @@ public class Cli {
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
         Equipo eq = null;
+        Equipo eqAux = null;
         while (!ok) {
-            view.showMostrarYPedirEquipos(equipos);
-            eq = getEquipoPorNombre(sc.nextLine());
+            do {
+                view.showMostrarYPedirEquipos(equipos);
+                eqAux = getEquipoPorNombre(sc.nextLine());
+                if(eqAux == null)
+                    view.showErrorEqNoEncontrado();
+            } while(eqAux == null);
+            eq = eqAux.clona();
             if (eq == null) {
                 view.showError();
             } else {
@@ -233,7 +244,7 @@ public class Cli {
         if (eqSelec != null) {
 
             view.showCorrectoSeleccionEquipo(eqSelec);
-            view.showMostrarOpcionesEditar();
+            view.showMostrarOpcionesEditarEquipo();
             int opc = sc.nextInt();
             switch (opc) {
                 case 0 -> view.showSaliendo();
@@ -300,6 +311,109 @@ public class Cli {
             view.showPjSelecCorrecto(getPersonajePorNombre(pjSelec));
         }
         view.showEquipoEstadoActual(eq);
+    }
+
+    public void editarPj(){
+        Scanner sc = new Scanner(System.in);
+
+        view.showMostrarYPedirPersonajesEditar(personajes);
+        String op = sc.nextLine();
+        Personaje pjSelec = getPersonajePorNombre(op);
+        if (pjSelec != null) {
+
+            view.showCorrectoSeleccionPj(pjSelec);
+            view.showMostrarOpcionesEditarPersonajes();
+            int opc = sc.nextInt();
+            switch (opc) {
+                case 0 -> view.showSaliendo();
+                case 1 -> cambiarNombre(pjSelec);
+                case 2 -> cambiarSalud(pjSelec);
+                case 3 -> cambiarHA(pjSelec);
+                case 4 -> cambiarHD(pjSelec);
+                case 5 -> cambiarTurno(pjSelec);
+                case 6 -> cambiarDano(pjSelec);
+                default -> view.showError();
+            }
+
+        }
+    }
+
+    public void cambiarNombre(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        String var;
+        do {
+            view.showPedirNombre();
+            var = sc.nextLine();
+            if(var != null)
+                pj.setNombre(var);
+            else
+                view.showError();
+        }while(var == null);
+    }
+
+    public void cambiarSalud(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int var;
+        do {
+            view.showPedirSalud();
+            var = sc.nextInt();
+            if(var != -1)
+                pj.setSalud(var);
+            else
+                view.showError();
+        }while(var == -1);
+    }
+
+    public void cambiarHA(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int var;
+        do {
+            view.showPedirHA();
+            var = sc.nextInt();
+            if(var != -1)
+                pj.setHAbase(var);
+            else
+                view.showError();
+        }while(var == -1);
+    }
+
+    public void cambiarHD(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int var;
+        do {
+            view.showPedirHD();
+            var = sc.nextInt();
+            if(var != -1)
+                pj.setHDbase(var);
+            else
+                view.showError();
+        }while(var == -1);
+    }
+
+    public void cambiarTurno(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int var;
+        do {
+            view.showPedirSalud();
+            var = sc.nextInt();
+            if(var != -1)
+                pj.setTurnoBase(var);
+            else
+                view.showError();
+        }while(var == -1);
+    }
+
+    public void cambiarDano(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int var;
+        do {
+            view.showPedirDano();
+            var = sc.nextInt();
+            if(var != -1)
+                pj.setDanoBase(var);
+            else
+                view.showError();
+        }while(var == -1);
     }
 
 

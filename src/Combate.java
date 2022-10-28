@@ -28,7 +28,6 @@ public class Combate {
         do{
             nuevoTurno();
             elegirUsoTurno();
-
             view.showPreguntarOtroTurno();
             c = sc.next().toLowerCase().charAt(0);
             if(c == 'n')
@@ -109,33 +108,30 @@ public class Combate {
         Personaje enem = null;
         String nombre = null;
         char c = 's';
-        int tiradaHA;
-        int tiradaHD;
-        int totalHA;
-        int totalHD;
+
 
         view.showPreguntarHApj(pj.getHAbase());
         c = sc.next().toLowerCase().charAt(0);
         if(c == 'n'){
-            System.out.println("Entonces, ¿cual es ahora?: ");
+            view.showPreguntaActual();
             pj.setHAbase(sc.nextInt());
-            System.out.println("Correcto, ahora tu HA es: " + pj.getHAbase());
+            view.showHACorrecto(pj);
         }
-        System.out.println("Tu daño es: " + pj.getDanoBase());
-        System.out.println("¿Es correcto?(s/n): ");
+        view.showPreguntaDanoActual(pj);
+        view.showPreguntaCorrecto();
         c = sc.next().toLowerCase().charAt(0);
         if(c == 'n'){
-            System.out.println("Entonces, ¿cual es ahora?: ");
+            view.showPreguntaActual();
             pj.setDanoBase(sc.nextInt());
-            System.out.println("Correcto, ahora tu daño es: " + pj.getDanoBase());
+            view.showDanoCorrecto(pj);
         }
-        System.out.println("Estos son los personajes atacables: ");
-        view.showMostrarParty(ambosEquipos.getParty());
-        sc = new Scanner(System.in);
+        view.showAtacables(ambosEquipos);
+
         do {
             sc = new Scanner(System.in);
-            System.out.println("¿A quien atacas?: ");
+            view.showPreguntaObjetivoAtaque();
             nombre = sc.nextLine();
+            i = 0;
             while (!ok && i < ambosEquipos.getPjsEnParty()) {
                 if (ambosEquipos.getParty().get(i).getNombre().equals(nombre)) {
                     ok = true;
@@ -147,47 +143,68 @@ public class Combate {
             if (enem == null)
                 view.showErrorPjNoEncontrado();
         } while(enem == null);
-        System.out.println("Su habilidad de defensa es: " + enem.getHDbase());
-        System.out.println("¿Es correcto?(s/n): ");
+        view.showPreguntaDefensaActual(enem);
+        view.showPreguntaCorrecto();
         c = sc.next().toLowerCase().charAt(0);
         if(c == 'n'){
-            System.out.println("Entonces, ¿cual es ahora?: ");
-            enem.setHAbase(sc.nextInt());
-            System.out.println("Correcto, ahora tu HD es: " + enem.getHDbase());
+            view.showPreguntaActual();
+            enem.setHDbase(sc.nextInt());
+            view.showHDCorrecto(enem);
         }
+        calcularAtaque(pj,enem, 0);
+
+    }
+
+    private void calcularAtaque(Personaje pj, Personaje enem, int bono){
+        int tiradaHA;
+        int tiradaHD;
+        int totalHA;
+        int totalHD;
+        Scanner sc = new Scanner(System.in);
+        char c;
+
         tiradaHA = d100conAbierta();
-        totalHA = tiradaHA + pj.getHAbase();
-        System.out.println(tiradaHA + " (tirada) + " + pj.getHAbase() + " (base) = " + totalHA);
+        totalHA = tiradaHA + pj.getHAbase() + bono;
+        view.showTiradaMasBaseHA(tiradaHA, pj, bono);
         tiradaHD = d100conAbierta();
         totalHD = tiradaHD + enem.getHDbase();
-        System.out.println(tiradaHD + " (tirada) + " + enem.getHDbase() + " (base) = " + totalHD);
+        view.showTiradaMasBaseHD(tiradaHD, enem);
+
         int dano = calcularDano(totalHA, totalHD, pj.getDanoBase());
-
-        System.out.println("El daño ejercido ha sido: " + dano);
-        System.out.println("¿Quieres que se aplique?: ");
-        c = sc.next().toLowerCase().charAt(0);
-        sc = new Scanner(System.in);
-        if(c == 's'){
-            enem.setSalud(enem.getSalud() - dano);
-            System.out.println("Daño aplicado");
-        } else {
-            System.out.println("Indica el daño aplicado entonces: ");
-            dano = sc.nextInt();
+        char opContra = 'n';
+        if(dano >= 0) {
+            view.showDanoCalculado(dano);
+            c = sc.next().toLowerCase().charAt(0);
+            sc = new Scanner(System.in);
+            if(c == 's'){
+                enem.setSalud(enem.getSalud() - dano);
+                view.showDanoAplicado();
+            } else {
+                view.showPreguntaDanoEntonces();
+                dano = sc.nextInt();
+            }
+            view.showSaludRestantePj(enem);
         }
-
-        view.showSaludRestantePj(enem);
-
+        else {
+            view.showContraataque(dano);
+            opContra = sc.next().toLowerCase().charAt(0);
+            if(opContra == 's'){
+                calcularAtaque(enem, pj, -dano);
+            }
+        }
     }
 
     private int calcularDano(int HA, int HD, int dano){
         int dif = HA - HD;
-        int danoTot = 0;
-        if(dif >= 0){
-            danoTot = (dano * dif) / 100;
+        int danoTot;
+        if(dif > 0){
+            danoTot = ((dano * dif)-20) / 100;
+        } else if(dif == 0){
+            danoTot = 0;
         } else {
-            danoTot = -1;
+            danoTot = dif / 2;
         }
-            return danoTot;
+        return danoTot;
     }
 
     private void realizarAccion(){
@@ -222,7 +239,7 @@ public class Combate {
         }while(tiradaAct >= 90);
 
         if(tirada <= 3){
-            tirada = -tirada;
+            tirada = -(int) (Math.random() * 100 + 1);
         }
 
         return tirada;

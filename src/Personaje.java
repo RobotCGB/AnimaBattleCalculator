@@ -65,6 +65,14 @@ public class Personaje {
         this.salud = salud;
     }
 
+    public void setHDbase(int HDbase) {
+        this.HDbase = HDbase;
+    }
+
+    public void setTurnoBase(int turnoBase) {
+        this.turnoBase = turnoBase;
+    }
+
     @Override
     public String toString(){
         return nombre;
