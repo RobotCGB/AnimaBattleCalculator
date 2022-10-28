@@ -10,6 +10,7 @@ public class Cli {
     ArrayList<Personaje> personajes;
     ArrayList<Equipo> equipos;
     Serializar serializar = new Serializar();
+    final int cantTA = 7;
 
     public Cli() {
         this.personajes = new ArrayList<>();
@@ -112,6 +113,8 @@ public class Cli {
     private void crearPersonaje() {
 
         Scanner sc = new Scanner(System.in);
+        int cuentaTA = 0;
+        int[] TA = new int[cantTA];
 
         view.showPedirNombre();
         String nombre = sc.nextLine();
@@ -131,13 +134,38 @@ public class Cli {
         view.showPedirDano();
         int danoBase = sc.nextInt();
 
-        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase));
+        view.showPedirFIL();
+        TA[cuentaTA] = sc.nextInt();
+        cuentaTA++;
+
+        view.showPedirCON();
+        TA[cuentaTA] = sc.nextInt();
+        cuentaTA++;
+
+        view.showPedirPEN();
+        TA[cuentaTA] = sc.nextInt();
+        cuentaTA++;
+
+        view.showPedirCAL();
+        TA[cuentaTA] = sc.nextInt();
+        cuentaTA++;
+
+        view.showPedirELE();
+        TA[cuentaTA] = sc.nextInt();
+        cuentaTA++;
+
+        view.showPedirFRI();
+        TA[cuentaTA] = sc.nextInt();
+        cuentaTA++;
+
+        view.showPedirENE();
+        TA[cuentaTA] = sc.nextInt();
+
+        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase, TA));
 
     }
 
     private void crearEquipo() {
-        Scanner sc = new Scanner(System.in);
-
         Equipo eq = new Equipo(preguntarNombre(), preguntarParty());
 
         preguntarMasilla(eq);
@@ -154,8 +182,8 @@ public class Cli {
     public ArrayList<Personaje> preguntarParty(){
 
         ArrayList<Personaje> party = new ArrayList<>();
-        String select = null;
-        Personaje aux = null;
+        String select;
+        Personaje aux;
         char c;
 
         do {

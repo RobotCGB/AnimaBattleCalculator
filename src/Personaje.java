@@ -1,6 +1,9 @@
 import java.io.Serializable;
 
 public class Personaje implements Serializable {
+    final int FIL = 0; final int CON = 1; final int PEN = 2;
+    final int CAL = 3; final int ELE = 4; final int FRI = 5;
+    final int ENE = 6;
     private String nombre;
     private int salud;
     private int HAbase;
@@ -8,8 +11,9 @@ public class Personaje implements Serializable {
     private int turnoBase;
     private int danoBase;
     private Colores color;
+    int[] TA;
 
-    public Personaje(String nombre, int salud, int HAbase, int HDbase, int turnoBase, int danoBase){
+    public Personaje(String nombre, int salud, int HAbase, int HDbase, int turnoBase, int danoBase, int[] TA){
         this.nombre = nombre;
         this.salud = salud;
         this.HAbase = HAbase;
@@ -17,6 +21,7 @@ public class Personaje implements Serializable {
         this.turnoBase = turnoBase;
         this.danoBase = danoBase;
         this.color = Colores.VACIO;
+        this.TA = TA;
     }
 
     public String getNombre() {
@@ -55,6 +60,10 @@ public class Personaje implements Serializable {
         return salud;
     }
 
+    public int[] getTA() {
+        return TA;
+    }
+
     public void setHAbase(int HAbase) {
         this.HAbase = HAbase;
     }
@@ -75,13 +84,17 @@ public class Personaje implements Serializable {
         this.turnoBase = turnoBase;
     }
 
+    public void setTA(int[] TA) {
+        this.TA = TA;
+    }
+
     @Override
     public String toString(){
         return nombre;
     }
 
     public Personaje clona(){
-        return new Personaje(this.nombre, this.salud, this.HAbase, this.HDbase, this.turnoBase, this.danoBase);
+        return new Personaje(this.nombre, this.salud, this.HAbase, this.HDbase, this.turnoBase, this.danoBase, this.TA);
     }
 
 

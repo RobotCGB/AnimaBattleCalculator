@@ -335,6 +335,34 @@ public class View implements Serializable {
         System.out.println("Entonces, ¿cual es ahora?: ");
     }
 
+    public void showPedirFIL(){
+        System.out.println("TA FIL actual: ");
+    }
+
+    public void showPedirCON(){
+        System.out.println("TA CON actual: ");
+    }
+
+    public void showPedirPEN(){
+        System.out.println("TA PEN actual: ");
+    }
+
+    public void showPedirCAL(){
+        System.out.println("TA CAL actual: ");
+    }
+
+    public void showPedirELE(){
+        System.out.println("TA ELE actual: ");
+    }
+
+    public void showPedirFRI(){
+        System.out.println("TA FRI actual: ");
+    }
+
+    public void showPedirENE(){
+        System.out.println("TA ENE actual: ");
+    }
+
     public void clear() {
         System.out.println();
     }
