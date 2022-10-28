@@ -175,6 +175,7 @@ public class View implements Serializable {
         System.out.println("5. Cambiar turno");
         System.out.println("6. Cambiar daño");
         System.out.println("7. Cambiar TA");
+        System.out.println("8. Cambiar critico");
     }
 
     public void showCorrectoSeleccionEquipo(Equipo eqSelec) {
@@ -226,6 +227,10 @@ public class View implements Serializable {
 
     public void showPedirDano() {
         System.out.println("Daño actual: ");
+    }
+
+    public void showPedirCritico(){
+        System.out.println("Critico en el que ataca(\n0: FIL, 1: CON, 2: PEN, 3: CAL, \n4:ELE, 5: FRI, 6: ENE): ");
     }
 
     public void showSaliendo() {

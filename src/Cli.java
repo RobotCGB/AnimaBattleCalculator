@@ -134,7 +134,14 @@ public class Cli {
 
         int[] TA = preguntarNuevaTA();
 
-        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase, TA));
+        int critico;
+
+        do {
+            view.showPedirCritico();
+            critico = sc.nextInt();
+        } while(critico < 0 || critico > 6);
+
+        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase, TA, critico));
 
     }
 
@@ -373,10 +380,24 @@ public class Cli {
                 case 5 -> cambiarTurno(pjSelec);
                 case 6 -> cambiarDano(pjSelec);
                 case 7 -> cambiarTA(pjSelec);
+                case 8 -> cambiarCritico(pjSelec);
                 default -> view.showError();
             }
 
         }
+    }
+
+    public void cambiarCritico(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int var;
+        do {
+            view.showPedirCritico();
+            var = sc.nextInt();
+            if(var != -1)
+                pj.setCritico(var);
+            else
+                view.showError();
+        }while(var < 0 || var > 6);
     }
 
     public void cambiarTA(Personaje pj){

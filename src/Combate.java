@@ -170,7 +170,7 @@ public class Combate {
         totalHD = tiradaHD + enem.getHDbase();
         view.showTiradaMasBaseHD(tiradaHD, enem);
 
-        int dano = calcularDano(totalHA, totalHD, pj.getDanoBase());
+        int dano = calcularDano(totalHA, totalHD, pj.getDanoBase(), enem.getTAindex(pj.getCritico()));
         char opContra = 'n';
         if(dano >= 0) {
             view.showDanoCalculado(dano);
@@ -194,11 +194,13 @@ public class Combate {
         }
     }
 
-    private int calcularDano(int HA, int HD, int dano){
+    private int calcularDano(int HA, int HD, int dano, int TA){
         int dif = HA - HD;
         int danoTot;
+        int restaTA = 100 - (TA * 10);
         if(dif > 0){
             danoTot = ((dano * dif)-20) / 100;
+            danoTot *= restaTA;
         } else if(dif == 0){
             danoTot = 0;
         } else {
