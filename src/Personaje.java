@@ -1,11 +1,13 @@
-public class Personaje {
+import java.io.Serializable;
+
+public class Personaje implements Serializable {
     private String nombre;
     private int salud;
     private int HAbase;
     private int HDbase;
     private int turnoBase;
     private int danoBase;
-    Colores color;
+    private Colores color;
 
     public Personaje(String nombre, int salud, int HAbase, int HDbase, int turnoBase, int danoBase){
         this.nombre = nombre;

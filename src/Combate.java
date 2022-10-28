@@ -49,10 +49,10 @@ public class Combate {
         for (int i = 0; i < cantidadPjs; i++) {
             posMay = posDelMayor(turnosDesOrden);
             turnoAux = turnosDesOrden[posMay];
-            turnosDesOrden[posMay] = 0;
+            turnosDesOrden[posMay] = -99999;
             alPjOrd.add(ambosEquipos.getParty().get(posMay));
             alTurnoOrd.add(turnoAux);
-            view.showTurnoActualPj(i, alPjOrd, ambosEquipos, posMay, turnoAux);
+            view.showTurnoActualPj(i, alPjOrd, alTurnoOrd, posMay, turnoAux);
         }
 
     }
@@ -256,13 +256,13 @@ public class Combate {
         }while(tiradaAct >= 90);
 
         if(tirada == 3){
-            tirada = -10;
+            tirada = -75;
         }
         if(tirada == 2){
-            tirada = -20;
+            tirada = -100;
         }
         if(tirada == 1){
-            tirada = -30;
+            tirada = -125;
         }
 
         return tirada;

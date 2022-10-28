@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -8,6 +9,7 @@ public class Cli {
     View view = new View();
     ArrayList<Personaje> personajes;
     ArrayList<Equipo> equipos;
+    Serializar serializar = new Serializar();
 
     public Cli() {
         this.personajes = new ArrayList<>();
@@ -19,7 +21,7 @@ public class Cli {
         this.equipos = equipos;
     }
 
-    public void run(){
+    public void run() throws FileNotFoundException {
         char opcion = 'n';
 
         view.showIntroduccion();
@@ -31,8 +33,11 @@ public class Cli {
                 case 3 -> crearEquipo();
                 case 4 -> view.showTodosPersonajes(personajes);
                 case 5 -> view.showTodosEquipos(equipos);
-                case 6 -> editarEquipos();
-                case 7 -> editarPj();
+                case 6 -> editarPj();
+                case 7 -> editarEquipos();
+                case 8 -> eliminarPj();
+                case 9 -> eliminarEq();
+                case 10 -> guardar();
                 default -> view.showError();
             }
             view.clear();
@@ -70,7 +75,7 @@ public class Cli {
             if (eq == null) {
                 view.showError();
             } else {
-                for (int i = 0; i < eq.party.size(); i++) {
+                for (int i = 0; i < eq.getParty().size(); i++) {
                     eq.getParty().get(i).setColor(Colores.AZUL);
                 }
                 ok = true;
@@ -95,7 +100,7 @@ public class Cli {
             if (eq == null) {
                 view.showError();
             } else {
-                for (int i = 0; i < eq.party.size(); i++) {
+                for (int i = 0; i < eq.getParty().size(); i++) {
                     eq.getParty().get(i).setColor(Colores.ROJO);
                 }
                 ok = true;
@@ -277,7 +282,7 @@ public class Cli {
         String pjSelec = null;
         Personaje ret = null;
 
-        view.showMostrarYPedirPjEliminar(eq);
+        view.showMostrarYPedirPjEliminar(personajes);
         pjSelec = sc.nextLine();
         ret = eq.getPjDeParty(pjSelec);
 
@@ -416,6 +421,33 @@ public class Cli {
         }while(var == -1);
     }
 
+    public void eliminarPj(){
+        Scanner sc = new Scanner(System.in);
 
+        view.showMostrarYPedirPersonajesEliminar(personajes);
+        String op = sc.nextLine();
+        Personaje pjSelec = getPersonajePorNombre(op);
+        if (pjSelec != null) {
+            view.showCorrectoEliminarPj(pjSelec);
+            personajes.remove(pjSelec);
+        }
+    }
+
+    public void eliminarEq(){
+        Scanner sc = new Scanner(System.in);
+
+        view.showMostrarYPedirEquiposEliminar(equipos);
+        String op = sc.nextLine();
+        Equipo eqSelec = getEquipoPorNombre(op);
+        if (eqSelec != null) {
+            view.showCorrectoEliminarEq(eqSelec);
+            equipos.remove(eqSelec);
+        }
+    }
+
+    public void guardar() throws FileNotFoundException {
+        serializar.serializarPj(personajes);
+        serializar.serializarEq(equipos);
+    }
 
 }

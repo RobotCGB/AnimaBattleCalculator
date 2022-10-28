@@ -1,7 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class View {
+public class View implements Serializable {
 
     public View() {
 
@@ -49,8 +49,11 @@ public class View {
         System.out.println("3. Crear equipo");
         System.out.println("4. Mostrar personajes");
         System.out.println("5. Mostrar equipos");
-        System.out.println("6. Editar equipos");
-        System.out.println("7. Editar personaje");
+        System.out.println("6. Editar personaje");
+        System.out.println("7. Editar equipo");
+        System.out.println("8. Eliminar personaje");
+        System.out.println("9. Eliminar equipo");
+        System.out.println("10. Guardar cambios");
         System.out.println("Elige: ");
     }
 
@@ -62,8 +65,8 @@ public class View {
         System.out.println(base + " + " + tirada + " = " + (base + tirada));
     }
 
-    public void showTurnoActualPj(int i, ArrayList<Personaje> alPjOrd, Equipo ambosEquipos, int posMay, int turnoAux) {
-        System.out.println(i + 1 + ". " + alPjOrd.get(i).getColor().getPigmento() + ambosEquipos.getParty().get(posMay).getNombre() + " (" + turnoAux + ")" + Colores.VACIO.getPigmento());
+    public void showTurnoActualPj(int i, ArrayList<Personaje> alPjOrd, ArrayList<Integer> alTurnosOrd, int posMay, int turnoAux) {
+        System.out.println(i + 1 + ". " + alPjOrd.get(i).getColor().getPigmento() + alPjOrd.get(i).getNombre() + " (" + turnoAux + ")" + Colores.VACIO.getPigmento());
     }
 
     public void showMostrarYPedirEquipos(ArrayList<Equipo> equipos) {
@@ -135,6 +138,12 @@ public class View {
         System.out.println("¿Cual quieres?: ");
     }
 
+    public void showMostrarYPedirPersonajesEliminar(ArrayList<Personaje> personajes){
+        System.out.println("Estos son los personajes a eliminar: ");
+        showTodosPersonajes(personajes);
+        System.out.println("¿Cual quieres?: ");
+    }
+
     public void showErrorPjNoEncontrado() {
         System.out.println("No se ha encontrado el personaje, vuelve a insertar pj.");
     }
@@ -175,10 +184,23 @@ public class View {
         System.out.println("Has seleccionado: " + pjSelec.getNombre());
     }
 
-    public void showMostrarYPedirPjEliminar(Equipo eq) {
-        System.out.println("Pjs en el equipo: ");
-        showMostrarParty(eq.getParty());
+    public void showCorrectoEliminarPj(Personaje pjSelec) {
+        System.out.println("Has eliminado: " + pjSelec.getNombre());
+    }
+
+    public void showCorrectoEliminarEq(Equipo eqSelec) {
+        System.out.println("Has eliminado: " + eqSelec.getNombre());
+    }
+
+    public void showMostrarYPedirPjEliminar(ArrayList<Personaje> personajes) {
+        System.out.println("Pjs disponibles: ");
+        showTodosPersonajes(personajes);
         System.out.println("\nElige pj a eliminar: ");
+    }
+    public void showMostrarYPedirEquiposEliminar(ArrayList<Equipo> equipos) {
+        System.out.println("Equipos disponibles: ");
+        showTodosEquipos(equipos);
+        System.out.println("\nElige equipo a eliminar: ");
     }
 
     public void showPedirNombre() {

@@ -1,10 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Equipo {
-    String nombre;
-    ArrayList<Personaje> party;
-    View view = new View();
+public class Equipo implements Serializable {
+
+    private String nombre;
+    private ArrayList<Personaje> party;
+    private View view = new View();
 
     public Equipo(String nombre, ArrayList<Personaje> party){
         this.nombre = nombre;
