@@ -54,10 +54,10 @@ public class Cli {
     private void empezarCombate() {
         Equipo eq1 = pedirEquipoUno();
         Equipo eq2 = pedirEquipoDos();
-
-        Combate combate = new Combate(eq1, eq2);
-        combate.continuarCombate();
-
+        if(eq1 != null && eq2 != null) {
+            Combate combate = new Combate(eq1, eq2);
+            combate.continuarCombate();
+        }
     }
 
     private Equipo pedirEquipoUno() {
@@ -65,17 +65,19 @@ public class Cli {
         boolean ok = false;
         Equipo eq = null;
         Equipo eqAux = null;
+        String eqEle;
         while (!ok) {
             do {
                 view.showMostrarYPedirEquipos(equipos);
-                eqAux = getEquipoPorNombre(sc.nextLine());
-                if(eqAux == null)
+                eqEle = sc.nextLine();
+                eqAux = getEquipoPorNombre(eqEle);
+                if(eqAux == null && !eqEle.equals("salir"))
                     view.showErrorEqNoEncontrado();
-            } while(eqAux == null);
-            eq = eqAux.clona();
-            if (eq == null) {
+            } while(eqAux == null || eqEle.equals("salir"));
+            if (eqAux == null) {
                 view.showError();
             } else {
+                eq = eqAux.clona();
                 for (int i = 0; i < eq.getParty().size(); i++) {
                     eq.getParty().get(i).setColor(Colores.AZUL);
                 }
@@ -90,17 +92,19 @@ public class Cli {
         boolean ok = false;
         Equipo eq = null;
         Equipo eqAux = null;
+        String eqEle;
         while (!ok) {
             do {
                 view.showMostrarYPedirEquipos(equipos);
-                eqAux = getEquipoPorNombre(sc.nextLine());
-                if(eqAux == null)
+                eqEle = sc.nextLine();
+                eqAux = getEquipoPorNombre(eqEle);
+                if(eqAux == null && !eqEle.equals("salir"))
                     view.showErrorEqNoEncontrado();
-            } while(eqAux == null);
-            eq = eqAux.clona();
-            if (eq == null) {
+            } while(eqAux == null || eqEle.equals("salir"));
+            if (eqAux == null) {
                 view.showError();
             } else {
+                eq = eqAux.clona();
                 for (int i = 0; i < eq.getParty().size(); i++) {
                     eq.getParty().get(i).setColor(Colores.ROJO);
                 }

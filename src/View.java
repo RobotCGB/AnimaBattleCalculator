@@ -66,13 +66,13 @@ public class View implements Serializable {
     }
 
     public void showTurnoActualPj(int i, ArrayList<Personaje> alPjOrd, ArrayList<Integer> alTurnosOrd, int posMay, int turnoAux) {
-        System.out.println(i + 1 + ". " + alPjOrd.get(i).getColor().getPigmento() + alPjOrd.get(i).getNombre() + " (" + turnoAux + ")" + Colores.VACIO.getPigmento());
+        System.out.println(i + 1 + ". " + alPjOrd.get(i).getColor().getPigmento() + alPjOrd.get(i).getNombre() + " (" + alPjOrd.get(i).getTurnoBase() + " + " + (turnoAux - alPjOrd.get(i).getTurnoBase()) + " = " + turnoAux + ")" + Colores.VACIO.getPigmento());
     }
 
     public void showMostrarYPedirEquipos(ArrayList<Equipo> equipos) {
         System.out.println("Equipos a elegir: ");
         showTodosEquipos(equipos);
-        System.out.println("Elige un equipo: ");
+        System.out.println("Elige un equipo (\"salir\" para salir): ");
     }
 
     public void showMostrarYPedirPersonajes(ArrayList<Personaje> personajes) {
