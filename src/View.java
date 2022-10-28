@@ -174,6 +174,7 @@ public class View implements Serializable {
         System.out.println("4. Cambiar HD");
         System.out.println("5. Cambiar turno");
         System.out.println("6. Cambiar daño");
+        System.out.println("7. Cambiar TA");
     }
 
     public void showCorrectoSeleccionEquipo(Equipo eqSelec) {

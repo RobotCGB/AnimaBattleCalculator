@@ -113,8 +113,6 @@ public class Cli {
     private void crearPersonaje() {
 
         Scanner sc = new Scanner(System.in);
-        int cuentaTA = 0;
-        int[] TA = new int[cantTA];
 
         view.showPedirNombre();
         String nombre = sc.nextLine();
@@ -133,6 +131,16 @@ public class Cli {
 
         view.showPedirDano();
         int danoBase = sc.nextInt();
+
+        int[] TA = preguntarNuevaTA();
+
+        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase, TA));
+
+    }
+
+    public int[] preguntarNuevaTA(){
+        int[] TA = new int[cantTA];
+        int cuentaTA = 0;
 
         view.showPedirFIL();
         TA[cuentaTA] = sc.nextInt();
@@ -161,8 +169,7 @@ public class Cli {
         view.showPedirENE();
         TA[cuentaTA] = sc.nextInt();
 
-        personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase, TA));
-
+        return TA;
     }
 
     private void crearEquipo() {
@@ -365,10 +372,23 @@ public class Cli {
                 case 4 -> cambiarHD(pjSelec);
                 case 5 -> cambiarTurno(pjSelec);
                 case 6 -> cambiarDano(pjSelec);
+                case 7 -> cambiarTA(pjSelec);
                 default -> view.showError();
             }
 
         }
+    }
+
+    public void cambiarTA(Personaje pj){
+        Scanner sc = new Scanner(System.in);
+        int[] var;
+        do {
+            var = preguntarNuevaTA();
+            if(var != null)
+                pj.setTA(var);
+            else
+                view.showError();
+        }while(var == null);
     }
 
     public void cambiarNombre(Personaje pj){
