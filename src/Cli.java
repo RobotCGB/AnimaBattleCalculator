@@ -53,62 +53,64 @@ public class Cli {
 
     private void empezarCombate() {
         Equipo eq1 = pedirEquipoUno();
-        Equipo eq2 = pedirEquipoDos();
-        if(eq1 != null && eq2 != null) {
+        Equipo eq2 = null;
+        if (eq1 != null) {
+            eq2 = pedirEquipoDos();
+        }
+        if (eq2 != null) {
             Combate combate = new Combate(eq1, eq2);
             combate.continuarCombate();
         }
+        view.showSaliendo();
     }
 
     private Equipo pedirEquipoUno() {
-        Scanner sc = new Scanner(System.in);
+        Scanner sc;
         boolean ok = false;
         Equipo eq = null;
         Equipo eqAux = null;
         String eqEle;
-        while (!ok) {
-            do {
-                view.showMostrarYPedirEquipos(equipos);
-                eqEle = sc.nextLine();
-                eqAux = getEquipoPorNombre(eqEle);
-                if(eqAux == null && !eqEle.equals("salir"))
-                    view.showErrorEqNoEncontrado();
-            } while(eqAux == null || eqEle.equals("salir"));
-            if (eqAux == null) {
-                view.showError();
-            } else {
-                eq = eqAux.clona();
-                for (int i = 0; i < eq.getParty().size(); i++) {
-                    eq.getParty().get(i).setColor(Colores.AZUL);
-                }
-                ok = true;
+        do {
+            sc = new Scanner(System.in);
+            view.showMostrarYPedirEquipos(equipos);
+            eqEle = sc.nextLine();
+            eqAux = getEquipoPorNombre(eqEle);
+            if (eqAux == null && !eqEle.equals("salir"))
+                view.showErrorEqNoEncontrado();
+        } while (eqAux == null && !eqEle.equals("salir"));
+        if (eqAux == null) {
+            view.showError();
+            eq = null;
+        } else {
+            eq = eqAux.clona();
+            for (int i = 0; i < eq.getParty().size(); i++) {
+                eq.getParty().get(i).setColor(Colores.AZUL);
             }
         }
         return eq;
     }
 
     private Equipo pedirEquipoDos() {
-        Scanner sc = new Scanner(System.in);
+        Scanner sc;
         boolean ok = false;
         Equipo eq = null;
         Equipo eqAux = null;
         String eqEle;
-        while (!ok) {
-            do {
-                view.showMostrarYPedirEquipos(equipos);
-                eqEle = sc.nextLine();
-                eqAux = getEquipoPorNombre(eqEle);
-                if(eqAux == null && !eqEle.equals("salir"))
-                    view.showErrorEqNoEncontrado();
-            } while(eqAux == null || eqEle.equals("salir"));
-            if (eqAux == null) {
-                view.showError();
-            } else {
-                eq = eqAux.clona();
-                for (int i = 0; i < eq.getParty().size(); i++) {
-                    eq.getParty().get(i).setColor(Colores.ROJO);
-                }
-                ok = true;
+        do {
+            sc = new Scanner(System.in);
+            view.showMostrarYPedirEquipos(equipos);
+            eqEle = sc.nextLine();
+            eqAux = getEquipoPorNombre(eqEle);
+            if (eqAux == null && !eqEle.equals("salir"))
+                view.showErrorEqNoEncontrado();
+        } while (eqAux == null && !eqEle.equals("salir"));
+        if (eqAux == null) {
+            view.showError();
+            eq = null;
+        } else {
+            eq = eqAux.clona();
+            for (int i = 0; i < eq.getParty().size(); i++) {
+                eq.getParty().get(i).setColor(Colores.ROJO);
             }
         }
         return eq;
@@ -143,13 +145,13 @@ public class Cli {
         do {
             view.showPedirCritico();
             critico = sc.nextInt();
-        } while(critico < 0 || critico > 6);
+        } while (critico < 0 || critico > 6);
 
         personajes.add(new Personaje(nombre, salud, HAbase, HDbase, turnoBase, danoBase, TA, critico));
 
     }
 
-    public int[] preguntarNuevaTA(){
+    public int[] preguntarNuevaTA() {
         int[] TA = new int[cantTA];
         int cuentaTA = 0;
 
@@ -192,12 +194,12 @@ public class Cli {
 
     }
 
-    public String preguntarNombre(){
+    public String preguntarNombre() {
         view.showEligeNombre();
         return sc.nextLine();
     }
 
-    public ArrayList<Personaje> preguntarParty(){
+    public ArrayList<Personaje> preguntarParty() {
 
         ArrayList<Personaje> party = new ArrayList<>();
         String select;
@@ -218,7 +220,7 @@ public class Cli {
         return party;
     }
 
-    public void preguntarMasilla(Equipo eq){
+    public void preguntarMasilla(Equipo eq) {
         char opMasilla;
         view.showPreguntarSiMasillas();
         opMasilla = sc.next().toLowerCase().charAt(0);
@@ -364,7 +366,7 @@ public class Cli {
         view.showEquipoEstadoActual(eq);
     }
 
-    public void editarPj(){
+    public void editarPj() {
         Scanner sc = new Scanner(System.in);
 
         view.showMostrarYPedirPersonajesEditar(personajes);
@@ -391,110 +393,110 @@ public class Cli {
         }
     }
 
-    public void cambiarCritico(Personaje pj){
+    public void cambiarCritico(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int var;
         do {
             view.showPedirCritico();
             var = sc.nextInt();
-            if(var != -1)
+            if (var != -1)
                 pj.setCritico(var);
             else
                 view.showError();
-        }while(var < 0 || var > 6);
+        } while (var < 0 || var > 6);
     }
 
-    public void cambiarTA(Personaje pj){
+    public void cambiarTA(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int[] var;
         do {
             var = preguntarNuevaTA();
-            if(var != null)
+            if (var != null)
                 pj.setTA(var);
             else
                 view.showError();
-        }while(var == null);
+        } while (var == null);
     }
 
-    public void cambiarNombre(Personaje pj){
+    public void cambiarNombre(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         String var;
         do {
             view.showPedirNombre();
             var = sc.nextLine();
-            if(var != null)
+            if (var != null)
                 pj.setNombre(var);
             else
                 view.showError();
-        }while(var == null);
+        } while (var == null);
     }
 
-    public void cambiarSalud(Personaje pj){
+    public void cambiarSalud(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int var;
         do {
             view.showPedirSalud();
             var = sc.nextInt();
-            if(var != -1)
+            if (var != -1)
                 pj.setSalud(var);
             else
                 view.showError();
-        }while(var == -1);
+        } while (var == -1);
     }
 
-    public void cambiarHA(Personaje pj){
+    public void cambiarHA(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int var;
         do {
             view.showPedirHA();
             var = sc.nextInt();
-            if(var != -1)
+            if (var != -1)
                 pj.setHAbase(var);
             else
                 view.showError();
-        }while(var == -1);
+        } while (var == -1);
     }
 
-    public void cambiarHD(Personaje pj){
+    public void cambiarHD(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int var;
         do {
             view.showPedirHD();
             var = sc.nextInt();
-            if(var != -1)
+            if (var != -1)
                 pj.setHDbase(var);
             else
                 view.showError();
-        }while(var == -1);
+        } while (var == -1);
     }
 
-    public void cambiarTurno(Personaje pj){
+    public void cambiarTurno(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int var;
         do {
             view.showPedirSalud();
             var = sc.nextInt();
-            if(var != -1)
+            if (var != -1)
                 pj.setTurnoBase(var);
             else
                 view.showError();
-        }while(var == -1);
+        } while (var == -1);
     }
 
-    public void cambiarDano(Personaje pj){
+    public void cambiarDano(Personaje pj) {
         Scanner sc = new Scanner(System.in);
         int var;
         do {
             view.showPedirDano();
             var = sc.nextInt();
-            if(var != -1)
+            if (var != -1)
                 pj.setDanoBase(var);
             else
                 view.showError();
-        }while(var == -1);
+        } while (var == -1);
     }
 
-    public void eliminarPj(){
+    public void eliminarPj() {
         Scanner sc = new Scanner(System.in);
 
         view.showMostrarYPedirPersonajesEliminar(personajes);
@@ -506,7 +508,7 @@ public class Cli {
         }
     }
 
-    public void eliminarEq(){
+    public void eliminarEq() {
         Scanner sc = new Scanner(System.in);
 
         view.showMostrarYPedirEquiposEliminar(equipos);
