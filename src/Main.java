@@ -14,7 +14,7 @@ public class Main {
         Serializar ser = new Serializar();
 
         switch (sc.nextInt()){
-            case 1 -> cli = new Cli(ser.deSerializarPj(), ser.deSerializarEq());
+            case 1 -> cli = new Cli(ser);
             default -> cli = new Cli();
         }
 

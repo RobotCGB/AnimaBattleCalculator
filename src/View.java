@@ -15,21 +15,35 @@ public class View implements Serializable {
         System.out.println("Bienvenido a Anima Battle Calculator (ABC): ");
     }
 
+    public void showTodosCombates(ArrayList<Combate> combates){
+        if(combates.size() > 0){
+            for (int i = 0; i < combates.size(); i++) {
+                System.out.println(combates.get(i).getNombre());
+            }
+        } else {
+            System.out.println("Aun no se han creado combates");
+        }
+    }
+
+    public void showCorrectoSeleccionCombate(Combate comSelec){
+        System.out.println("Has seleccionado: " + comSelec.getNombre());
+    }
+
+
+    public void showMostrarYPedirCombatesVolver(ArrayList<Combate> combates){
+        System.out.println("Estos son los combates en curso: ");
+        showTodosCombates(combates);
+        System.out.println("¿Cual quieres?: ");
+    }
+
     public void showTodosEquipos(ArrayList<Equipo> equipos) {
 
         if (equipos.size() > 1) {
             for (int i = 0; i < equipos.size(); i++) {
-                System.out.println("");
                 System.out.print(equipos.get(i).getNombre() + ": ");
                 showMostrarParty(equipos.get(i).getParty());
-                System.out.println("");
 
             }
-        } else if (equipos.size() == 1) {
-            System.out.println("");
-            System.out.println(equipos.get(0).getNombre() + ": ");
-            showMostrarParty(equipos.get(0).getParty());
-            System.out.println("");
         } else {
             System.out.println("Aun no se han creado equipos");
         }
@@ -54,6 +68,9 @@ public class View implements Serializable {
         System.out.println("8. Eliminar personaje");
         System.out.println("9. Eliminar equipo");
         System.out.println("10. Guardar cambios");
+        System.out.println("11. Mostrar combates");
+        System.out.println("12. Eliminar combate");
+        System.out.println("13. Continuar combate");
         System.out.println("Elige: ");
     }
 
@@ -126,6 +143,10 @@ public class View implements Serializable {
         System.out.println("Personaje: " + pjSelec + " seleccionado");
     }
 
+    public void showCombateSelecCorrecto(Combate comSelec) {
+        System.out.println("Combate: " + comSelec + " seleccionado");
+    }
+
     public void showMostrarYPedirEquiposEditar(ArrayList<Equipo> equipos) {
         System.out.println("Estos son los equipos a editar: ");
         showTodosEquipos(equipos);
@@ -141,6 +162,12 @@ public class View implements Serializable {
     public void showMostrarYPedirPersonajesEliminar(ArrayList<Personaje> personajes){
         System.out.println("Estos son los personajes a eliminar: ");
         showTodosPersonajes(personajes);
+        System.out.println("¿Cual quieres?: ");
+    }
+
+    public void showMostrarYPedirCombatesEliminar(ArrayList<Combate> combates){
+        System.out.println("Estos son los combates a eliminar: ");
+        showTodosCombates(combates);
         System.out.println("¿Cual quieres?: ");
     }
 
@@ -188,6 +215,10 @@ public class View implements Serializable {
 
     public void showCorrectoEliminarPj(Personaje pjSelec) {
         System.out.println("Has eliminado: " + pjSelec.getNombre());
+    }
+
+    public void showCorrectoEliminarCombate(Combate comSelec) {
+        System.out.println("Has eliminado: " + comSelec.getNombre());
     }
 
     public void showCorrectoEliminarEq(Equipo eqSelec) {

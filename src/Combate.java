@@ -1,8 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Combate {
+public class Combate implements Serializable {
+    String nombre;
     Equipo ambosEquipos;
     ArrayList<Personaje> alPjOrd = new ArrayList<>();
     ArrayList<Integer> alTurnoOrd = new ArrayList<>();
@@ -13,13 +15,18 @@ public class Combate {
     public Combate(Equipo equipoUno, Equipo equipoDos){
         this.ambosEquipos = new Equipo(equipoUno, equipoDos);
         this.cantidadPjs = ambosEquipos.getPjsEnParty();
+        this.nombre = equipoUno.getNombre() + " .VS. " + equipoDos.getNombre();
     }
 
     public void iniciarCombate(){
 
     }
 
-    public void continuarCombate(){
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Combate continuarCombate(){
         Scanner sc = new Scanner(System.in);
         boolean ok = false;
         boolean fin = false;
@@ -34,6 +41,8 @@ public class Combate {
                 fin = true;
             numeroDeTurnos++;
         }while(!fin);
+
+        return this;
 
     }
 

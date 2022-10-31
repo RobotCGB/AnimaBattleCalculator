@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Cli {
@@ -9,6 +10,7 @@ public class Cli {
     View view = new View();
     ArrayList<Personaje> personajes;
     ArrayList<Equipo> equipos;
+    ArrayList<Combate> combates;
     Serializar serializar = new Serializar();
     final int cantTA = 7;
 
@@ -17,9 +19,16 @@ public class Cli {
         this.equipos = new ArrayList<>();
     }
 
-    public Cli(ArrayList<Personaje> personajes, ArrayList<Equipo> equipos) {
-        this.personajes = personajes;
-        this.equipos = equipos;
+    public Cli(Serializar ser) throws FileNotFoundException {
+        this.personajes = ser.deSerializarPj();
+        this.equipos = ser.deSerializarEq();
+        this.combates = ser.deSerializarCombate();
+        if(personajes == null)
+            personajes = new ArrayList<>();
+        if(equipos == null)
+            equipos = new ArrayList<>();
+        if(combates == null)
+            combates = new ArrayList<>();
     }
 
     public void run() throws FileNotFoundException {
@@ -39,16 +48,63 @@ public class Cli {
                 case 8 -> eliminarPj();
                 case 9 -> eliminarEq();
                 case 10 -> guardar();
+                case 11 -> view.showTodosCombates(combates);
+                case 12 -> eliminarCombate();
+                case 13 -> volverACombate();
                 default -> view.showError();
             }
             view.clear();
         }
     }
 
-    private int elegirUso() {
+    private int elegirUso() throws InputMismatchException {
+        try {
+            Scanner sc = new Scanner(System.in);
+            view.showOpcionesUso();
+            return sc.nextInt();
+        } catch (InputMismatchException e){
+            System.out.println("No has introducido un caracter valido");
+        }
+        return elegirUso();
+    }
+
+    private void volverACombate(){
+
         Scanner sc = new Scanner(System.in);
-        view.showOpcionesUso();
-        return sc.nextInt();
+
+        view.showMostrarYPedirCombatesVolver(combates);
+        String op = sc.nextLine();
+        Combate comSelec = getCombatePorNombre(op);
+        if(comSelec != null){
+
+            view.showCorrectoSeleccionCombate(comSelec);
+            comSelec.continuarCombate();
+        }
+
+    }
+
+    public void editarEquipos() {
+
+        Scanner sc = new Scanner(System.in);
+
+        view.showMostrarYPedirEquiposEditar(equipos);
+        String op = sc.nextLine();
+        Equipo eqSelec = getEquipoPorNombre(op);
+        if (eqSelec != null) {
+
+            view.showCorrectoSeleccionEquipo(eqSelec);
+            view.showMostrarOpcionesEditarEquipo();
+            int opc = sc.nextInt();
+            switch (opc) {
+                case 0 -> view.showSaliendo();
+                case 1 -> eqSelec.anadirPjParty(pjAAnadir());
+                case 2 -> eqSelec.eliminarPjParty(pjAEliminar(eqSelec));
+                case 3 -> eqSelec.cambiarNombre();
+                case 4 -> anadirMasillas(eqSelec);
+                default -> view.showError();
+            }
+
+        }
     }
 
     private void empezarCombate() {
@@ -59,16 +115,44 @@ public class Cli {
         }
         if (eq2 != null) {
             Combate combate = new Combate(eq1, eq2);
-            combate.continuarCombate();
+            combates.add(combate.continuarCombate());
         }
         view.showSaliendo();
     }
 
+    public void eliminarCombate(){
+        Scanner sc = new Scanner(System.in);
+
+        view.showMostrarYPedirCombatesEliminar(combates);
+        String op = sc.nextLine();
+        Combate comSelec = getCombatePorNombre(op);
+        if (comSelec != null) {
+            view.showCorrectoEliminarCombate(comSelec);
+            combates.remove(comSelec);
+        }
+    }
+
+    public Combate getCombatePorNombre(String nombre) {
+        boolean ok = false;
+        int i = 0;
+        Combate ret = null;
+        while (!ok && i < combates.size()) {
+            if (combates.get(i).getNombre().equals(nombre)) {
+                ok = true;
+                ret = combates.get(i);
+                view.showCombateSelecCorrecto(ret);
+            }
+            i++;
+        }
+        if (ret == null)
+            view.showError();
+        return ret;
+    }
+
     private Equipo pedirEquipoUno() {
         Scanner sc;
-        boolean ok = false;
         Equipo eq = null;
-        Equipo eqAux = null;
+        Equipo eqAux;
         String eqEle;
         do {
             sc = new Scanner(System.in);
@@ -80,7 +164,6 @@ public class Cli {
         } while (eqAux == null && !eqEle.equals("salir"));
         if (eqAux == null) {
             view.showError();
-            eq = null;
         } else {
             eq = eqAux.clona();
             for (int i = 0; i < eq.getParty().size(); i++) {
@@ -92,9 +175,8 @@ public class Cli {
 
     private Equipo pedirEquipoDos() {
         Scanner sc;
-        boolean ok = false;
         Equipo eq = null;
-        Equipo eqAux = null;
+        Equipo eqAux;
         String eqEle;
         do {
             sc = new Scanner(System.in);
@@ -106,7 +188,6 @@ public class Cli {
         } while (eqAux == null && !eqEle.equals("salir"));
         if (eqAux == null) {
             view.showError();
-            eq = null;
         } else {
             eq = eqAux.clona();
             for (int i = 0; i < eq.getParty().size(); i++) {
@@ -195,6 +276,7 @@ public class Cli {
     }
 
     public String preguntarNombre() {
+        Scanner sc = new Scanner(System.in);
         view.showEligeNombre();
         return sc.nextLine();
     }
@@ -284,30 +366,6 @@ public class Cli {
         } else {
             view.showError();
             return null;
-        }
-    }
-
-    public void editarEquipos() {
-
-        Scanner sc = new Scanner(System.in);
-
-        view.showMostrarYPedirEquiposEditar(equipos);
-        String op = sc.nextLine();
-        Equipo eqSelec = getEquipoPorNombre(op);
-        if (eqSelec != null) {
-
-            view.showCorrectoSeleccionEquipo(eqSelec);
-            view.showMostrarOpcionesEditarEquipo();
-            int opc = sc.nextInt();
-            switch (opc) {
-                case 0 -> view.showSaliendo();
-                case 1 -> eqSelec.anadirPjParty(pjAAnadir());
-                case 2 -> eqSelec.eliminarPjParty(pjAEliminar(eqSelec));
-                case 3 -> eqSelec.cambiarNombre();
-                case 4 -> anadirMasillas(eqSelec);
-                default -> view.showError();
-            }
-
         }
     }
 
@@ -523,6 +581,7 @@ public class Cli {
     public void guardar() throws FileNotFoundException {
         serializar.serializarPj(personajes);
         serializar.serializarEq(equipos);
+        serializar.serializarCombate(combates);
     }
 
 }

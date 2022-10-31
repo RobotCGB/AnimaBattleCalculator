@@ -5,6 +5,7 @@ public class Serializar {
 
     String nomFilePj = "./saveAnimaPj.dat";
     String nomFileEq = "./saveAnimaEq.dat";
+    String nomFileCom = "./saveAnimaCom.dat";
 
     public Serializar() {
 
@@ -55,6 +56,29 @@ public class Serializar {
             throw new RuntimeException(e);
         }
         return new ArrayList<Equipo>();
+    }
+
+    public void serializarCombate(ArrayList<Combate> combate) throws FileNotFoundException {
+        try {
+            FileOutputStream file = new FileOutputStream(nomFileCom);
+            ObjectOutputStream objStr = new ObjectOutputStream(file);
+            objStr.writeObject(combate);
+
+        } catch (IOException e) {
+
+        }
+    }
+
+    public ArrayList<Combate> deSerializarCombate() throws FileNotFoundException {
+        try {
+            FileInputStream file = new FileInputStream(nomFileCom);
+            ObjectInputStream objStr = new ObjectInputStream(file);
+            return (ArrayList<Combate>) objStr.readObject();
+        } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return new ArrayList<Combate>();
     }
 
 }
